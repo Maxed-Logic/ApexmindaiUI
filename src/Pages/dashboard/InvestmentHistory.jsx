@@ -12,6 +12,7 @@ const InvestmentHistory = () => {
 
     // Income Type filter
     const [incomeTypes, setIncomeTypes] = useState([]);
+    // ✅ Yahan hum UI ka text store karenge (e.g., "Bot 3")
     const [selectedType, setSelectedType] = useState("All");
 
     // Pagination state
@@ -22,7 +23,20 @@ const InvestmentHistory = () => {
 
     const regno = sessionStorage.getItem("Regno");
 
-    // 🔹 Fetch Income Types from API (FULL DEDUPE FIX)
+    // ✅ 1. Display Name (UI ke liye)
+    const getDisplayType = (type) => {
+        if (!type) return "";
+        return type.toLowerCase() === "stake" ? "Bot 3" : type;
+    };
+
+    // ✅ 2. Backend API Value (Stake bhejne ke liye)
+    const getBackendType = (displayType) => {
+        if (!displayType) return "all";
+        if (displayType === "All") return "all";
+        return displayType.toLowerCase() === "bot 3" ? "stake" : displayType;
+    };
+
+    // 🔹 Fetch Income Types from API
     useEffect(() => {
         const fetchIncomeTypes = async () => {
             try {
@@ -91,9 +105,12 @@ const InvestmentHistory = () => {
                 setLoading(true);
                 setError(null);
 
+                // ✅ Yahan hum Backend Type nikal rahe hain
+                const apiType = getBackendType(selectedType);
+
                 console.log("🚀 API CALL:", {
                     regno: Number(regno),
-                    type: selectedType === "All" ? "all" : selectedType,
+                    type: apiType,
                     pageIndex: currentPage,
                     pageSize: itemsPerPage,
                 });
@@ -103,10 +120,7 @@ const InvestmentHistory = () => {
                     {
                         params: {
                             regno: Number(regno),
-                            type:
-                                selectedType === "All"
-                                    ? "all"
-                                    : selectedType,
+                            type: apiType,
                             pageIndex: currentPage,
                             pageSize: itemsPerPage,
                         },
@@ -153,6 +167,10 @@ const InvestmentHistory = () => {
     // 🔹 Client-side search filter
     const filteredRecords = records.filter((row) => {
         const searchLower = searchTerm.toLowerCase();
+        
+        // Search me "Bot 3" likhne par bhi Stake wale records milein
+        const displayType = getDisplayType(row.Investment || row.TransTypes || row.incomeType || "").toLowerCase();
+
         return (
             (row.Rdate && row.Rdate.toLowerCase().includes(searchLower)) ||
             (row.remark && row.remark.toLowerCase().includes(searchLower)) ||
@@ -164,7 +182,8 @@ const InvestmentHistory = () => {
                 row.BinaryBuffer.toString()
                     .toLowerCase()
                     .includes(searchLower)) ||
-            (row.type && row.type.toLowerCase().includes(searchLower))
+            (row.type && row.type.toLowerCase().includes(searchLower)) ||
+            displayType.includes(searchLower)
         );
     });
 
@@ -179,8 +198,9 @@ const InvestmentHistory = () => {
         setCurrentPage(1);
     };
 
+    // ✅ Dropdown handle change
     const handleTypeChange = (e) => {
-        setSelectedType(e.target.value);
+        setSelectedType(e.target.value); // "Bot 3" set hoga
         setCurrentPage(1);
     };
 
@@ -189,7 +209,6 @@ const InvestmentHistory = () => {
         return dateString.split("T")[0];
     };
 
-    // 🔹 Added "Type" column
     const columns = [
         "Sl.No.",
         "Date",
@@ -245,11 +264,15 @@ const InvestmentHistory = () => {
                                     border: "1px solid rgba(102, 126, 234, 0.2)",
                                 }}
                             >
-                                {incomeTypes.map((t, i) => (
-                                    <option key={`type-${i}-${t}`} value={t}>
-                                        {t}
-                                    </option>
-                                ))}
+                                {incomeTypes.map((t, i) => {
+                                    // ✅ Yahan UI text "Bot 3" ban raha hai
+                                    const displayValue = getDisplayType(t);
+                                    return (
+                                        <option key={`type-${i}-${t}`} value={displayValue}>
+                                            {displayValue}
+                                        </option>
+                                    );
+                                })}
                             </select>
                         </div>
                     </div>
@@ -295,11 +318,13 @@ const InvestmentHistory = () => {
                                 <span
                                     className="px-3 py-2 text-info font-medium"
                                 >
-                                    {row.Investment ||
+                                    {/* ✅ Table me bhi Stake ki jagah Bot 3 show hoga */}
+                                    {getDisplayType(
+                                        row.Investment ||
                                         row.TransTypes ||
                                         row.incomeType ||
-                                        selectedType ||
-                                        "-"}
+                                        selectedType
+                                    ) || "-"}
                                 </span>
                             </td>
                             <td>
