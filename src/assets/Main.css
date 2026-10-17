@@ -8344,7 +8344,7 @@ ul {
 }
 
 .card {
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 }
 
 .round-8 {
@@ -11134,3 +11134,452 @@ ul {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* stake card */
+  /* ---------- Main Container ---------- */
+        .stake-container {
+          position: relative;
+          padding: 4px 2px 12px;
+        }
+
+        .stake-swiper {
+          padding: 5px 3px 18px;
+        }
+
+        .stake-swiper .swiper-slide {
+          height: auto;
+          display: flex;
+        }
+
+        .stake-swiper .swiper-slide > .stake-card {
+          width: 100%;
+        }
+
+        /* ---------- Navigation ---------- */
+        .stake-nav-wrap {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 12px;
+          margin-top: 8px;
+        }
+
+        .stake-nav-btn {
+          width: 42px;
+          height: 42px;
+          border-radius: 50%;
+          border: 1px solid #443beca5;
+          background: #fff;
+          color: #2700c577;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          font-size: 19px;
+          transition: all 0.25s ease;
+          box-shadow: 0 4px 12px rgba(239, 176, 27, 0.12);
+        }
+
+        .stake-nav-btn:hover {
+          background: #1b26ef;
+          color: #fff;
+          transform: translateY(-2px);
+        }
+
+        .stake-nav-btn:active {
+          transform: scale(0.95);
+        }
+
+        /* ---------- Card ---------- */
+        .stake-card {
+          position: relative;
+          overflow: hidden;
+          background: #fff;
+          border: 1px solid #c6c2f3 !important;
+          border-radius: 16px !important;
+          box-shadow: 0 5px 20px rgba(30, 41, 59, 0.06) !important;
+          transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .stake-card-inner {
+          display: flex;
+          align-items: center;
+          gap: 15px;
+          padding: 20px 16px !important;
+        }
+
+        /* ---------- Chart ---------- */
+        .stake-chart-wrap {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-shrink: 0;
+        }
+
+        .stake-chart-box {
+          position: relative;
+          width: 122px;
+          height: 122px;
+          flex-shrink: 0;
+        }
+
+        .stake-chart-center {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          pointer-events: none;
+        }
+
+        .stake-chart-center h6 {
+          margin: 0;
+          padding: 0;
+          line-height: 1.3;
+          font-weight: 800;
+          color: green;
+          font-size: 15px;
+          overflow-wrap: anywhere;
+        }
+
+        .stake-chart-center p {
+          margin: 3px 0 0;
+          padding: 0;
+          line-height: 1.1;
+          color: #8b95a5;
+          font-size: 11px;
+          font-weight: 600;
+        }
+
+        /* ---------- Right Side Details ---------- */
+        .stake-details {
+          flex: 1;
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          gap: 16px;
+        }
+
+        .stake-details > .d-flex {
+          display: grid !important;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 12px !important;
+        }
+
+        .stake-row {
+          display: flex;
+          align-items: center;
+          gap: 9px;
+          min-width: 0;
+        }
+
+        .stake-icon {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border-radius: 11px !important;
+          width: 35px;
+          height: 35px;
+          flex-shrink: 0;
+          font-size: 15px;
+        }
+
+        .stake-icon-coins {
+          background: #fff4d5 !important;
+          color: #c58a00b1 !important;
+          font-size: 16px;
+        }
+
+        .stake-icon-earn {
+          background: #e5f8ed !important;
+          color: #20a464 !important;
+        }
+
+        .stake-icon-date {
+          background: #e8f3ff !important;
+          color: #3686d9 !important;
+        }
+
+        .stake-icon-cycle {
+          background: #fff4d5 !important;
+          color: #c58b00 !important;
+        }
+
+        .stake-label {
+          margin: 0 0 4px;
+          color: #8b95a5;
+          font-size: 11px;
+          font-weight: 500;
+          line-height: 1.35;
+        }
+
+        .stake-value-lg {
+          margin: 0;
+          font-weight: 800;
+          color: #b78300;
+          font-size: 16px;
+          line-height: 1.3;
+          white-space: nowrap;
+        }
+
+        .stake-value {
+          margin: 0;
+          font-weight: 750;
+          font-size: 14px;
+          color: #20a464;
+          line-height: 1.3;
+          white-space: nowrap;
+        }
+
+        .stake-value-sm {
+          margin: 0;
+          font-weight: 700;
+          font-size: 13px;
+          color: #263449;
+          line-height: 1.4;
+          white-space: nowrap;
+        }
+
+        .stake-sub {
+          color: #8b95a5;
+          margin-left: 4px;
+          font-size: 11px;
+          font-weight: 400;
+        }
+
+        /* ---------- Payout Modal ---------- */
+        .payout-modal-overlay {
+          position: fixed;
+          inset: 0;
+          background: rgba(0, 0, 0, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 9999;
+          padding: 16px;
+        }
+
+        .payout-modal {
+          background: #fff;
+          border-radius: 16px;
+          padding: 24px;
+          width: 100%;
+          max-width: 420px;
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        .payout-modal-title {
+          margin: 0 0 16px;
+          font-weight: 800;
+          color: #263449;
+          font-size: 18px;
+        }
+
+        .payout-modal-info {
+          background: #f8fafc;
+          border-radius: 10px;
+          padding: 12px 14px;
+          margin-bottom: 16px;
+        }
+
+        .payout-info-row {
+          display: flex;
+          justify-content: space-between;
+          font-size: 13px;
+          padding: 5px 0;
+          color: #64748b;
+        }
+
+        .payout-info-row strong {
+          color: #263449;
+          font-weight: 700;
+        }
+
+        .payout-modal-field {
+          margin-bottom: 14px;
+        }
+
+        .payout-modal-field label {
+          display: block;
+          font-size: 12px;
+          font-weight: 600;
+          color: #64748b;
+          margin-bottom: 6px;
+        }
+
+        .payout-modal-actions {
+          display: flex;
+          gap: 10px;
+          margin-top: 20px;
+        }
+
+        .payout-modal-actions .btn {
+          flex: 1;
+          min-height: 42px;
+          font-weight: 600;
+        }
+
+        /* ---------- Tablet ---------- */
+        @media (max-width: 1024px) {
+          .stake-card-inner {
+            gap: 12px;
+            padding: 18px 13px !important;
+          }
+
+          .stake-chart-box {
+            width: 108px;
+            height: 108px;
+          }
+
+          .stake-details {
+            gap: 14px;
+          }
+
+          .stake-details > .d-flex {
+            gap: 10px !important;
+          }
+
+          .stake-row {
+            gap: 7px;
+          }
+
+          .stake-icon {
+            width: 31px;
+            height: 31px;
+            font-size: 13px;
+          }
+        }
+
+        /* ---------- Mobile ---------- */
+        @media (max-width: 640px) {
+          .stake-container {
+            margin-left: 8px !important;
+            margin-right: 8px !important;
+          }
+
+          .stake-swiper {
+            padding: 4px 2px 14px;
+          }
+
+          .stake-card-inner {
+            align-items: center !important;
+            gap: 14px;
+            padding: 19px 14px !important;
+          }
+
+          .stake-chart-box {
+            width: 105px;
+            height: 105px;
+          }
+
+          .stake-chart-center h6 {
+            font-size: 13px;
+          }
+
+          .stake-chart-center p {
+            font-size: 10px;
+          }
+
+          .stake-details {
+            gap: 15px;
+          }
+
+          .stake-details > .d-flex {
+            gap: 12px 8px !important;
+          }
+
+          .stake-row {
+            gap: 7px;
+          }
+
+          .stake-icon {
+            width: 29px;
+            height: 29px;
+            border-radius: 9px !important;
+            font-size: 12px;
+          }
+
+          .stake-label {
+            font-size: 10px;
+          }
+
+          .stake-value-lg {
+            font-size: 14px;
+          }
+
+          .stake-value,
+          .stake-value-sm {
+            font-size: 12px;
+          }
+
+          .stake-details > .btn {
+            min-height: 39px;
+          }
+        }
+
+        /* ---------- Small Mobile ---------- */
+        @media (max-width: 380px) {
+          .stake-card-inner {
+            flex-direction: column;
+            gap: 18px;
+            padding: 20px 14px !important;
+          }
+
+          .stake-chart-box {
+            width: 125px;
+            height: 125px;
+          }
+
+          .stake-chart-center h6 {
+            font-size: 15px;
+          }
+
+          .stake-details {
+            width: 100%;
+            gap: 15px;
+          }
+
+          .stake-details > .d-flex {
+            gap: 14px 8px !important;
+          }
+
+          .stake-icon {
+            width: 32px;
+            height: 32px;
+          }
+
+          .stake-label {
+            font-size: 11px;
+          }
+
+          .stake-value-lg {
+            font-size: 15px;
+          }
+
+          .stake-value,
+          .stake-value-sm {
+            font-size: 13px;
+          }
+        }

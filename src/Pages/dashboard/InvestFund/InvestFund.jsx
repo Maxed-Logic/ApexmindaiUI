@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { Link } from 'react-router-dom';
-import { Wallet, History, ShieldCheck,ArrowRight, Zap, Headphones, BarChart3 } from 'lucide-react';
+import { Wallet, History, ShieldCheck, ArrowRight, Zap, Headphones, BarChart3 } from 'lucide-react';
 import apiClient from '../../../api/apiClient';
 import { useUser } from '../../../context/UserContext';
 import Toast from '../../../Componenets/ui/Toast';
+import bot3invest from '../../../assets/images/bot3invest.jpg';
 import './Invest.css';
 
 const InvestFund = () => {
@@ -16,6 +17,7 @@ const InvestFund = () => {
 
   const regno = sessionStorage.getItem("Regno");
 
+  // Bot 1 & Bot 2 ke liye (type: "Bot")
   const investInBot = async (botId, amount) => {
     if (!amount || parseFloat(amount) <= 0) {
       toast.error('Please enter a valid amount.');
@@ -34,6 +36,7 @@ const InvestFund = () => {
         regno: regno,
         rkprice: parseFloat(amount),
         uRegno: 0,
+        type: "Bot"
       });
       if (response.data.result === 'true') {
         toast.success(response.data.message);
@@ -48,12 +51,11 @@ const InvestFund = () => {
       setLoadingBot1(false); setLoadingBot2(false);
     }
   };
-
   return (
     <div className="invest-container">
       <Toast />
       
-      {/* Top Navigation Bar - Fully Responsive */}
+      {/* Top Navigation Bar */}
       <div className="invest-header">
         <div className="header-left">
           <div className="logo-box">
@@ -68,20 +70,19 @@ const InvestFund = () => {
           </div>
         </div>
         <div className="header-right">
-          <div className="btn-primary gap-1" >
+          <div className="btn-primary gap-1">
             <Wallet size={20} className="wallet-icon me-1" style={{color: "#fff"}}/>
             <div className="deposit-info">
               <span className="value">${userData?.Depositfund?.toLocaleString() || 0}</span>
             </div>
           </div>
 
-          <Link to="/dashboard/InvestmentHistory" className=" btn-primary gap-1">
+          <Link to="/dashboard/InvestmentHistory" className="btn-primary gap-1">
             <History size={18} />
             <span>History</span>
           </Link>
         </div>
       </div>
-
 
       <div className="bot-grid">
         {/* Bot 1 - Purple Theme */}
@@ -137,7 +138,6 @@ const InvestFund = () => {
         {/* Bot 2 - Blue Theme */}
         <div className="bot-card blue-theme">
           <div className="card-header">
-            {/* <div className="bot-num">02</div> */}
             <div className="bot-details">
               <h3>BOT 2</h3>
             </div>
@@ -185,6 +185,23 @@ const InvestFund = () => {
           </div>
         </div>
       </div>
+
+
+{/* Bot 3 - Monthly Investment Banner */}
+<Link to="/dashboard/InvestFundForMoonthly" className="bot3-banner-link">
+  <div className="bot3-banner">
+    <img 
+      src={bot3invest} 
+      alt="Invest in BOT 3 - Monthly Income Plan" 
+      className="bot3-banner-img" 
+    />
+    <div className="bot3-banner-overlay">
+      <span className="bot3-banner-cta">
+        Invest Now <ArrowRight size={18} />
+      </span>
+    </div>
+  </div>
+</Link>
 
       {/* Bottom Features Bar */}
       <div className="features-row">

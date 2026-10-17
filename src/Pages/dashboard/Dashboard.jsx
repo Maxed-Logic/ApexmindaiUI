@@ -40,7 +40,7 @@ ChartJS.register(
 
 const Dashboard = () => {
     const navigate = useNavigate();
-    const { userData, refreshData , currentEarnings  } = useUser();
+    const { userData, refreshData } = useUser();
     //  Add this state at the top with other states
     const [hoveredIncome, setHoveredIncome] = useState(null);
 
@@ -451,7 +451,7 @@ const Dashboard = () => {
         setShowTokenPayoutModal(true);
     };
 
-  // BOT start in Dashboard direct
+    // BOT start in Dashboard direct
     const fetchBotStatus = async () => {
         try {
             setLoading(true);
@@ -515,7 +515,7 @@ const Dashboard = () => {
         };
     }, [userData?.status, apiBotStatus]);
 
-    
+
     // Send OTP - SIRF API KA MESSAGE
     const handleSendOTP = async () => {
         try {
@@ -1062,7 +1062,7 @@ const Dashboard = () => {
                                                 </div>
 
 
-                                                 {/* <div className="col-6">
+                                                {/* <div className="col-6">
                                                     <div className="countdown-box text-center p-1">
                                                         <div className="small fw-semibold ">
                                                             BOT-1
@@ -1115,8 +1115,6 @@ const Dashboard = () => {
                             </div>
                         </div>
                     </div>
-
-
                     {/* Income Wallet - Fully Responsive */}
                     <div className="col-md-6 col-lg-4 d-flex align-items-stretch">
                         <div className="card w-100">
@@ -1346,17 +1344,18 @@ const Dashboard = () => {
                             </div>
                         </div>
                     </div>
+                </div>
 
 
 
 
-
+                <div className='row'>
                     <div className="col-12 col-lg-8">
                         <div className="row g-2">
 
                             {/* Card 1 - BOT INCOME */}
                             <div className="col-6 col-lg-4 d-flex align-items-stretch">
-                                <div className="card01 w-100 border-0 shadow-sm" style={{ cursor: "pointer" }} onClick={() => goToStatement("AI Bot Income")}>
+                                <div className="card w-100" style={{ cursor: "pointer" }} onClick={() => goToStatement("AI Bot Income")}>
                                     <div className="card-body02 bonus-card p-3">
                                         <div className="d-flex justify-content-between align-items-start mb-2">
                                             <div>
@@ -1375,7 +1374,7 @@ const Dashboard = () => {
 
                             {/* Card 2 - Trading Level Bonus */}
                             <div className="col-6 col-lg-4 d-flex align-items-stretch">
-                                <div className="card01 w-100 border-0 shadow-sm" style={{ cursor: "pointer" }} onClick={() => goToStatement("Trading Level Bonus")}>
+                                <div className="card w-100" style={{ cursor: "pointer" }} onClick={() => goToStatement("Trading Level Bonus")}>
                                     <div className="card-body02 bonus-card01 p-3">
                                         <div className="d-flex justify-content-between align-items-start mb-2">
                                             <div>
@@ -1394,7 +1393,7 @@ const Dashboard = () => {
 
                             {/* Card 3 - Direct Income */}
                             <div className="col-12 col-lg-4 col-md-12 d-flex align-items-stretch">
-                                <div className="card01 w-100 border-0 shadow-sm" style={{ cursor: "pointer" }} onClick={() => goToStatement("Sponsor Bonus")}>
+                                <div className="card w-100" style={{ cursor: "pointer" }} onClick={() => goToStatement("Sponsor Bonus")}>
                                     <div className="card-body02 bonus-card p-3">
                                         <div className="d-flex  justify-content-between align-items-start mb-2">
                                             <div>
@@ -1414,11 +1413,11 @@ const Dashboard = () => {
                         </div>
 
                         {/* Row 2 - 3 Cards (Salary, Reward, APEX Mining) */}
-                        <div className="row g-2 mt-1">
+                        <div className="row g-2 ">
 
                             {/* Card 4 - Salary */}
                             <div className="col-6 col-lg-4 d-flex align-items-stretch">
-                                <div className="card01 w-100 border-0 shadow-sm" style={{ cursor: "pointer" }} onClick={() => goToStatement("Salary")}>
+                                <div className="card w-100" style={{ cursor: "pointer" }} onClick={() => goToStatement("Salary")}>
                                     <div className="card-body02 bonus-card01 p-3">
                                         <div className="d-flex justify-content-between align-items-start mb-2">
                                             <div className="text-decoration-none w-100">
@@ -1439,7 +1438,7 @@ const Dashboard = () => {
 
                             {/* Card 5 - Reward */}
                             <div className="col-6 col-lg-4 d-flex align-items-stretch">
-                                <div className="card01 w-100 border-0 shadow-sm" style={{ cursor: "pointer" }} onClick={() => goToStatement("Reward")}>
+                                <div className="card w-100" style={{ cursor: "pointer" }} onClick={() => goToStatement("Reward")}>
                                     <div className="card-body02 bonus-card p-3">
                                         <div className="d-flex justify-content-between align-items-start mb-2">
                                             <div>
@@ -1458,7 +1457,7 @@ const Dashboard = () => {
 
                             {/* Card 6 - Payoutable */}
                             <div className="col-12 col-lg-4 col-md-12 d-flex align-items-stretch mb-2 mb-lg-0">
-                                <div className="card01 w-100 border-0 shadow-sm" style={{ cursor: "pointer" }} >
+                                <div className="card w-100 " style={{ cursor: "pointer" }} >
                                     <div className="card-body02 bonus-card01 p-3">
                                         <div className="d-flex justify-content-between align-items-start mb-2">
                                             <div>
@@ -1477,8 +1476,6 @@ const Dashboard = () => {
 
                         </div>
                     </div>
-
-
                     {/* Apex mind Token */}
                     <div className="col-lg-4">
                         <div className="row">
@@ -1593,71 +1590,122 @@ const Dashboard = () => {
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <hr className='mb-2' style={{ backgroundColor: "black", height: "1px" }} />
+                <div className='text-dark'>
+                    <h3 className='mb-3'>Apex Minning Program</h3>
+                </div>
+
+                {/* Team/Business Details Section */}
+                <div className="">
+                    <div className="row g-3">
+
+                        {/* Left Side - col-8 */}
+                        <div className="col-12 col-lg-8">
+                            <div className="row g-2">
+
+                                {/* Row 1 - 3 Cards */}
+                                <div className="col-12">
+                                    <div className="row g-2">
+
+                                        {/* Card 1 - Invest Token */}
+                                        <div className="col-6 col-md-4 col-lg-4 d-flex align-items-stretch">
+                                            <div
+                                                className="card w-100 "
+                                                style={{
+                                                    cursor: "pointer",
+                                                    borderRadius: "12px",
+                                                    transition: "all 0.3s ease"
+                                                }}
+
+                                            >
+                                                <div className="card-body02 p-3 d-flex flex-column">
+                                                    <div className="d-flex justify-content-between align-items-start mb-2">
+                                                        <div className="flex-grow-1 ">
+                                                            <p style={{
+                                                                fontSize: "15px",
+                                                                fontWeight: "600",
+                                                                color: "#6c757d",
+                                                                marginBottom: "2px"
+                                                            }}>
+                                                                Invest Amount
+                                                            </p>
+                                                            <h3 className='amount-report01'>
+                                                                <Link to="/dashboard/InvestTokenHistory">
+                                                                    ${userData?.TotalAmountBuyToken || '0'}</Link>
+                                                            </h3>
 
 
-                    <hr className='mb-2' style={{ backgroundColor: "black", height: "1px" }} />
-                    <div className='text-dark'>
-                        <h3 className='mb-3'>Apex Minning Program</h3>
-                    </div>
 
-                    {/* Team/Business Details Section */}
-                    <div className="container-fluid">
-                        <div className="row g-3">
 
-                            {/* Left Side - col-8 */}
-                            <div className="col-12 col-lg-8">
-                                <div className="row g-2">
 
-                                    {/* Row 1 - 3 Cards */}
-                                    <div className="col-12">
-                                        <div className="row g-2">
 
-                                            {/* Card 1 - Invest Token */}
-                                            <div className="col-6 col-md-4 col-lg-4 d-flex align-items-stretch">
-                                                <div
-                                                    className="card02 w-100 border-0 shadow-sm h-100"
-                                                    style={{
-                                                        cursor: "pointer",
-                                                        borderRadius: "12px",
-                                                        transition: "all 0.3s ease"
-                                                    }}
-
-                                                >
-                                                    <div className="card-body02 p-3 d-flex flex-column">
-                                                        <div className="d-flex justify-content-between align-items-start mb-2">
-                                                            <div className="flex-grow-1 ">
+                                                            <div className='mt-1'>
                                                                 <p style={{
-                                                                    fontSize: "15px",
+                                                                    fontSize: "16px",
                                                                     fontWeight: "600",
                                                                     color: "#6c757d",
-                                                                    marginBottom: "2px"
+                                                                    marginBottom: "0"
                                                                 }}>
-                                                                    Invest Amount
+                                                                    Invest Token
                                                                 </p>
-                                                                <h3 className='amount-report01'>
+                                                                <div className='mt-1 amount-report01' style={{
+                                                                    display: "flex",
+                                                                    alignItems: "center",
+                                                                    gap: "8px",
+
+                                                                }}>
+                                                                    <img
+                                                                        src={apexcoin}
+                                                                        alt="Apex Coin"
+                                                                        style={{
+                                                                            width: "24px",
+                                                                            height: "24px",
+                                                                            borderRadius: "50%"
+                                                                        }}
+                                                                    />
                                                                     <Link to="/dashboard/InvestTokenHistory">
-                                                                        ${userData?.TotalAmountBuyToken || '0'}</Link>
-                                                                </h3>
+                                                                        {userData?.TotalTokenInWallet || '0'}
+                                                                    </Link>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="p-2 bg-primary-subtle rounded-2 ms-2" style={{
+                                                            backgroundColor: "rgba(253, 53, 13, 0.1)",
+                                                            borderRadius: "8px",
+                                                            padding: "8px"
+                                                        }}>
+                                                            <i className="ti ti-users fs-5 text-primary" style={{ fontSize: "20px", color: "#0d6efd" }}></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
 
+                                        {/* Card 2 - Overall Token */}
+                                        <div className="div col-6 col-md-4 col-lg-4 d-flex align-items-stretch">
+                                            <div className="card w-100">
+                                                <div className="card-body02 p-3 d-flex flex-column">
+                                                    <div className="d-flex justify-content-between align-items-start mb-2">
+                                                        <div className="flex-grow-1 p-">
 
+                                                            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
 
-
-
-
-                                                                <div className='mt-1'>
+                                                                <div className=''>
                                                                     <p style={{
-                                                                        fontSize: "16px",
+                                                                        fontSize: "16x",
                                                                         fontWeight: "600",
                                                                         color: "#6c757d",
                                                                         marginBottom: "0"
                                                                     }}>
-                                                                        Invest Token
+                                                                        Earned Token
                                                                     </p>
+
                                                                     <div className='mt-1 amount-report01' style={{
                                                                         display: "flex",
                                                                         alignItems: "center",
                                                                         gap: "8px",
-
                                                                     }}>
                                                                         <img
                                                                             src={apexcoin}
@@ -1668,351 +1716,291 @@ const Dashboard = () => {
                                                                                 borderRadius: "50%"
                                                                             }}
                                                                         />
-                                                                        <Link to="/dashboard/InvestTokenHistory">
-                                                                            {userData?.TotalTokenInWallet || '0'}
-                                                                        </Link>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="p-2 bg-primary-subtle rounded-2 ms-2" style={{
-                                                                backgroundColor: "rgba(253, 53, 13, 0.1)",
-                                                                borderRadius: "8px",
-                                                                padding: "8px"
-                                                            }}>
-                                                                <i className="ti ti-users fs-5 text-primary" style={{ fontSize: "20px", color: "#0d6efd" }}></i>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            {/* Card 2 - Overall Token */}
-                                            <div className="col-6 col-md-4 col-lg-4 d-flex align-items-stretch">
-                                                <div
-                                                    className="card02 w-100 border-0 shadow-sm h-100"
-                                                    style={{
-                                                        cursor: "pointer",
-                                                        borderRadius: "12px",
-                                                        transition: "all 0.3s ease"
-                                                    }}
-
-                                                >
-                                                    <div className="card-body02 p-3 d-flex flex-column">
-                                                        <div className="d-flex justify-content-between align-items-start mb-2">
-                                                            <div className="flex-grow-1 p-">
-
-                                                                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-
-                                                                    <div className=''>
-                                                                        <p style={{
-                                                                            fontSize: "16x",
-                                                                            fontWeight: "600",
-                                                                            color: "#6c757d",
-                                                                            marginBottom: "0"
-                                                                        }}>
-                                                                            Earned Token
-                                                                        </p>
-
-                                                                        <div className='mt-1 amount-report01' style={{
-                                                                            display: "flex",
-                                                                            alignItems: "center",
-                                                                            gap: "8px",
-                                                                        }}>
-                                                                            <img
-                                                                                src={apexcoin}
-                                                                                alt="Apex Coin"
-                                                                                style={{
-                                                                                    width: "24px",
-                                                                                    height: "24px",
-                                                                                    borderRadius: "50%"
-                                                                                }}
-                                                                            />
-                                                                            <div className='' onClick={() => goToHistory("")}>
-                                                                                {userData?.TotalEarnTokenInWallet || '0'}
-                                                                            </div>
-                                                                        </div></div>
-                                                                </div>
-                                                                <div className='' style={{
-                                                                    fontSize: "16px",
-                                                                    fontWeight: "600",
-                                                                    color: "#6c757d",
-                                                                    marginTop: "10px"
-
-                                                                }}>
-                                                                    Current Value
-                                                                </div>
-                                                                <div className='amount-report01 mt-1'>
-                                                                    ${((userData?.TotalEarnTokenInWallet || 0) * price).toFixed(2)}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <p style={{
-                                                            fontSize: "15px",
-                                                            fontWeight: "500",
-                                                            color: "#6c757d",
-                                                            marginBottom: "0",
-                                                            marginTop: "4px"
-                                                        }}>
-                                                            Live Token Price:
-                                                            <span style={{
-                                                                color: "green",
-                                                                fontWeight: "700",
-                                                                marginLeft: "4px",
-                                                                fontSize: "15px"
-                                                            }}>
-                                                                {price.toFixed(2)}
-                                                            </span>
-                                                        </p>
-                                                    </div>
-                                                    <div className="p-2 bg-success-subtle rounded-2 ms-2" style={{
-                                                        backgroundColor: "rgba(40, 167, 69, 0.1)",
-                                                        borderRadius: "8px",
-                                                        padding: "8px"
-                                                    }}>
-                                                        <i className="ti ti-gift fs-5 text-success" style={{ fontSize: "20px", color: "green" }}></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-
-
-                                            {/* Card 3 - Mining(ROI) */}
-                                            <div className="col-12 col-md-4 col-lg-4 d-flex align-items-stretch">
-                                                <div
-                                                    className="card02 w-100 border-0 shadow-sm h-100"
-                                                    style={{
-                                                        cursor: "pointer",
-                                                        borderRadius: "12px",
-                                                        transition: "all 0.3s ease"
-                                                    }}
-
-                                                >
-                                                    <div className="card-body02 p-3 d-flex flex-column">
-                                                        <div className="d-flex justify-content-between align-items-start mb-2">
-                                                            <div className="flex-grow-1">
-                                                                <p style={{
-                                                                    fontSize: "16px",
-                                                                    fontWeight: "600",
-                                                                    color: "#6c757d",
-                                                                    marginBottom: "4px"
-                                                                }}>
-                                                                    Mining (ROI)
-                                                                </p>
-
-                                                                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
-                                                                    <img
-                                                                        src={apexcoin}
-                                                                        alt="Apex Coin"
-                                                                        style={{
-                                                                            width: "24px",
-                                                                            height: "24px",
-                                                                            borderRadius: "50%"
-                                                                        }}
-                                                                    />
-
-                                                                    <h5 className='amount-report01'>
-
-                                                                        <div className='' onClick={() => goToHistory("Token Stake Bonus")}>
-                                                                            {userData?.TokenStakeBonus?.toLocaleString() || '0'}
+                                                                        <div className='' onClick={() => goToHistory("")}>
+                                                                            {userData?.TotalEarnTokenInWallet || '0'}
                                                                         </div>
+                                                                    </div></div>
+                                                            </div>
+                                                            <div className='' style={{
+                                                                fontSize: "16px",
+                                                                fontWeight: "600",
+                                                                color: "#6c757d",
+                                                                marginTop: "10px"
 
-                                                                    </h5>
-                                                                </div>
-                                                                <div className='mt-2' style={{
-                                                                    fontSize: "16px",
-                                                                    fontWeight: "600",
-                                                                    color: "#6c757d",
-                                                                    marginBottom: "2px"
-                                                                }}>
+                                                            }}>
+                                                                Current Value
+                                                            </div>
+                                                            <div className='amount-report01 mt-1'>
+                                                                ${((userData?.TotalEarnTokenInWallet || 0) * price).toFixed(2)}
+                                                            </div>
+                                                        </div>
+                                                    </div>
 
-                                                                    Level Income
+                                                    <p style={{
+                                                        fontSize: "15px",
+                                                        fontWeight: "500",
+                                                        color: "#6c757d",
+                                                        marginBottom: "0",
+                                                        marginTop: "4px"
+                                                    }}>
+                                                        Live Token Price:
+                                                        <span style={{
+                                                            color: "green",
+                                                            fontWeight: "700",
+                                                            marginLeft: "4px",
+                                                            fontSize: "15px"
+                                                        }}>
+                                                            {price.toFixed(2)}
+                                                        </span>
+                                                    </p>
+                                                </div>
+                                                {/* <div className="p-2 bg-success-subtle rounded-2 ms-2" style={{
+                                                    backgroundColor: "rgba(40, 167, 69, 0.1)",
+                                                    borderRadius: "8px",
+                                                    padding: "8px"
+                                                }}>
+                                                    <i className="ti ti-gift fs-5 text-success" style={{ fontSize: "20px", color: "green" }}></i>
+                                                </div> */}
+                                            </div>
+                                        </div>
+
+
+                                        {/* Card 3 - Mining(ROI) */}
+                                        <div className="col-12 col-md-4 col-lg-4 d-flex align-items-stretch">
+                                            <div
+                                                className="card w-100 "
+                                                style={{
+                                                    cursor: "pointer",
+                                                    borderRadius: "12px",
+                                                    transition: "all 0.3s ease"
+                                                }}
+
+                                            >
+                                                <div className="card-body02 p-3 d-flex flex-column">
+                                                    <div className="d-flex justify-content-between align-items-start mb-2">
+                                                        <div className="flex-grow-1">
+                                                            <p style={{
+                                                                fontSize: "16px",
+                                                                fontWeight: "600",
+                                                                color: "#6c757d",
+                                                                marginBottom: "4px"
+                                                            }}>
+                                                                Mining (ROI)
+                                                            </p>
+
+                                                            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+                                                                <img
+                                                                    src={apexcoin}
+                                                                    alt="Apex Coin"
+                                                                    style={{
+                                                                        width: "24px",
+                                                                        height: "24px",
+                                                                        borderRadius: "50%"
+                                                                    }}
+                                                                />
+
+                                                                <h5 className='amount-report01'>
+
+                                                                    <div className='' onClick={() => goToHistory("Token Stake Bonus")}>
+                                                                        {userData?.TokenStakeBonus?.toLocaleString() || '0'}
+                                                                    </div>
+
+                                                                </h5>
+                                                            </div>
+                                                            <div className='mt-2' style={{
+                                                                fontSize: "16px",
+                                                                fontWeight: "600",
+                                                                color: "#6c757d",
+                                                                marginBottom: "2px"
+                                                            }}>
+
+                                                                Level Income
+                                                            </div>
+                                                            <h5 className='amount-report01' style={{
+                                                                display: "flex",
+                                                                alignItems: "center",
+                                                                gap: "8px"
+                                                            }}>
+                                                                <img
+                                                                    src={apexcoin}
+                                                                    alt="Apex Coin"
+                                                                    style={{
+                                                                        width: "24px",
+                                                                        height: "24px",
+                                                                        borderRadius: "50%"
+                                                                    }}
+                                                                />
+                                                                <div className='' onClick={() => goToHistory("Level Income")}>
+                                                                    {userData?.LevelIncome
+                                                                        ? Number(userData.LevelIncome).toLocaleString(undefined, {
+                                                                            minimumFractionDigits: 2,
+                                                                            maximumFractionDigits: 2
+                                                                        })
+                                                                        : '0.00'
+                                                                    }
                                                                 </div>
-                                                                <h5 className='amount-report01' style={{
-                                                                    display: "flex",
-                                                                    alignItems: "center",
-                                                                    gap: "8px"
-                                                                }}>
-                                                                    <img
-                                                                        src={apexcoin}
-                                                                        alt="Apex Coin"
-                                                                        style={{
-                                                                            width: "24px",
-                                                                            height: "24px",
-                                                                            borderRadius: "50%"
-                                                                        }}
-                                                                    />
-                                                                    <div className='' onClick={() => goToHistory("Level Income")}>
-                                                                        {userData?.LevelIncome
-                                                                            ? Number(userData.LevelIncome).toLocaleString(undefined, {
-                                                                                minimumFractionDigits: 2,
-                                                                                maximumFractionDigits: 2
-                                                                            })
-                                                                            : '0.00'
-                                                                        }
+                                                            </h5>
+
+
+                                                        </div>
+                                                        <div className="p-2 bg-info-subtle rounded-2 ms-2" style={{
+                                                            backgroundColor: "rgba(23, 162, 184, 0.1)",
+                                                            borderRadius: "8px",
+                                                            padding: "8px"
+                                                        }}>
+                                                            <i className="ti ti-building fs-5 text-info" style={{ fontSize: "20px", color: "#17a2b8" }}></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+
+                                {/* Row 2 - 2 Cards  */}
+                                <div className="col-12 mt-2">
+                                    <div className="row g-2">
+
+                                        {/* Card 4 - Social Media Bonus */}
+                                        <div className="col-12 col-md-6 d-flex align-items-stretch">
+                                            <div className="card bonus-card w-100" style={{ cursor: "pointer" }}>
+                                                <div className="card-body p-3 d-flex flex-column">
+                                                    <div className="d-flex justify-content-between align-items-start mb-2">
+
+                                                        <div>
+                                                            <div className="" style={{ fontWeight: "600", fontSize: "16px", color: "#6c757d" }}>Social Media Bonus</div>
+
+                                                            <div className='mt-3' style={{ display: "flex", alignItems: "center", gap: "8px", }}>
+                                                                <img
+                                                                    src={apexcoin}
+                                                                    alt="Apex Coin"
+                                                                    style={{
+                                                                        width: "24px",
+                                                                        height: "24px",
+                                                                        borderRadius: "50%"
+                                                                    }}
+                                                                />
+                                                                <h5 style={{ fontWeight: "800", fontSize: "23px", color: "green" }}>
+                                                                    <div className='' onClick={() => goToHistory("Social Media Bonus")}>
+                                                                        {userData?.SocialBonus?.toLocaleString() || '0'}
                                                                     </div>
                                                                 </h5>
-
-
                                                             </div>
-                                                            <div className="p-2 bg-info-subtle rounded-2 ms-2" style={{
-                                                                backgroundColor: "rgba(23, 162, 184, 0.1)",
-                                                                borderRadius: "8px",
-                                                                padding: "8px"
-                                                            }}>
-                                                                <i className="ti ti-building fs-5 text-info" style={{ fontSize: "20px", color: "#17a2b8" }}></i>
-                                                            </div>
+                                                        </div>
+
+                                                        <div className="p-2 bg-primary-subtle rounded-2 ms-2">
+                                                            <i className="ti ti-user fs-5 text-primary"></i>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-
                                         </div>
-                                    </div>
 
-
-
-                                    {/* Row 2 - 2 Cards  */}
-                                    <div className="col-12 mt-2">
-                                        <div className="row g-2">
-
-                                            {/* Card 4 - Social Media Bonus */}
-                                            <div className="col-12 col-md-6 d-flex align-items-stretch">
-                                                <div className="card02 bonus-card w-100 border-0 shadow-sm h-100" style={{ cursor: "pointer" }}>
-                                                    <div className="card-body p-3 d-flex flex-column">
-                                                        <div className="d-flex justify-content-between align-items-start mb-2">
-
-                                                            <div>
-                                                                <div className="" style={{ fontWeight: "600", fontSize: "16px", color: "#6c757d" }}>Social Media Bonus</div>
-
-                                                                <div className='mt-3' style={{ display: "flex", alignItems: "center", gap: "8px", }}>
-                                                                    <img
-                                                                        src={apexcoin}
-                                                                        alt="Apex Coin"
-                                                                        style={{
-                                                                            width: "24px",
-                                                                            height: "24px",
-                                                                            borderRadius: "50%"
-                                                                        }}
-                                                                    />
-                                                                    <h5 style={{ fontWeight: "800", fontSize: "23px", color: "green" }}>
-                                                                        <div className='' onClick={() => goToHistory("Social Media Bonus")}>
-                                                                            {userData?.SocialBonus?.toLocaleString() || '0'}
-                                                                        </div>
-                                                                    </h5>
-                                                                </div>
+                                        {/* Card 5 - Air drop */}
+                                        <div className="col-12 col-md-6 d-flex align-items-stretch">
+                                            <div className="card bonus-card01 w-100" style={{ cursor: "pointer" }} >
+                                                <div className="card-body02 p-3 d-flex flex-column">
+                                                    <div className="d-flex justify-content-between align-items-start mb-2">
+                                                        <div className="flex-grow-1">
+                                                            <div style={{ fontWeight: "600", color: "#6c757d", fontSize: "16px" }}>Air Drop</div>
+                                                            <div className='mt-3' style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+                                                                <img
+                                                                    src={apexcoin}
+                                                                    alt="Apex Coin"
+                                                                    style={{
+                                                                        width: "24px",
+                                                                        height: "24px",
+                                                                        borderRadius: "50%"
+                                                                    }}
+                                                                />
+                                                                <h5 style={{ fontWeight: "800", color: "green" }}>
+                                                                    <div className='' onClick={() => goToHistory("Invest Token Bonus")}>
+                                                                        {userData?.tokenBonusOnUpgrade?.toLocaleString() || '0'}
+                                                                    </div>
+                                                                </h5>
                                                             </div>
-
-                                                            <div className="p-2 bg-primary-subtle rounded-2 ms-2">
-                                                                <i className="ti ti-user fs-5 text-primary"></i>
-                                                            </div>
+                                                        </div>
+                                                        <div className="p-2 bg-warning-subtle rounded-2 ms-2">
+                                                            <i className="ti ti-crown fs-5 text-warning"></i>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            {/* Card 5 - Air drop */}
-                                            <div className="col-12 col-md-6 d-flex align-items-stretch">
-                                                <div className="card02 bonus-card01 w-100 border-0 shadow-sm h-100" style={{ cursor: "pointer" }} >
-                                                    <div className="card-body02 p-3 d-flex flex-column">
-                                                        <div className="d-flex justify-content-between align-items-start mb-2">
-                                                            <div className="flex-grow-1">
-                                                                <div style={{ fontWeight: "600", color: "#6c757d", fontSize: "16px" }}>Air Drop</div>
-                                                                <div className='mt-3' style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
-                                                                    <img
-                                                                        src={apexcoin}
-                                                                        alt="Apex Coin"
-                                                                        style={{
-                                                                            width: "24px",
-                                                                            height: "24px",
-                                                                            borderRadius: "50%"
-                                                                        }}
-                                                                    />
-                                                                    <h5 style={{ fontWeight: "800", color: "green" }}>
-                                                                        <div className='' onClick={() => goToHistory("Invest Token Bonus")}>
-                                                                            {userData?.tokenBonusOnUpgrade?.toLocaleString() || '0'}
-                                                                        </div>
-                                                                    </h5>
-                                                                </div>
-                                                            </div>
-                                                            <div className="p-2 bg-warning-subtle rounded-2 ms-2">
-                                                                <i className="ti ti-crown fs-5 text-warning"></i>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            {/* Right Side - Team/Business Details Card (col-4) */}
-                            <div className="col-12 col-lg-4 d-flex align-items-stretch">
-                                <div className="card02 w-100 border-0 shadow-sm h-100">
-                                    <div className="card-body02 p-3">
-                                        <h5 className="card-title fw-semibold mb-3">Team/Business Details</h5>
-
-                                        <div className="d-flex align-items-center justify-content-between mb-2">
-                                            <div className="d-flex align-items-center gap-2">
-                                                <div className="p-2 bg-primary-subtle rounded-2">
-                                                    <i className="ti ti-user fs-5 text-primary"></i>
-                                                </div>
-                                                <h6 className="mb-0 fw-semibold">Total Team</h6>
-                                            </div>
-                                            <h6 className="mb-0 fw-semibold">{userData?.TeamCount || '0'}</h6>
-                                        </div>
-
-                                        <div className="d-flex align-items-center justify-content-between mb-2">
-                                            <div className="d-flex align-items-center gap-2">
-                                                <div className="p-2" >
-                                                    <i className="ti ti-chart-line fs-5" style={{ color: '#1976D2' }}></i>
-                                                </div>
-                                                <h6 className="mb-0 fw-semibold">Active Team</h6>
-                                            </div>
-                                            <h6 className="mb-0 fw-semibold">{userData?.ActiveTeam || '0'}</h6>
-                                        </div>
-
-                                        <div className="d-flex align-items-center justify-content-between mb-2">
-                                            <div className="d-flex align-items-center gap-2">
-                                                <div className="p-2">
-                                                    <i className="ti ti-arrows-exchange fs-5" style={{ color: '#1976D2' }}></i>
-                                                </div>
-                                                <h6 className="mb-0 fw-semibold">Inactive Team</h6>
-                                            </div>
-                                            <h6 className="mb-0 fw-semibold">{userData?.InactiveTeam || '0'}</h6>
-                                        </div>
-
-                                        <div className="d-flex align-items-center justify-content-between mb-2">
-                                            <div className="d-flex align-items-center gap-2">
-                                                <div className="p-2" >
-                                                    <i className="ti ti-repeat fs-5" style={{ color: '#1976D2' }}></i>
-                                                </div>
-                                                <h6 className="mb-0 fw-semibold">Active Direct</h6>
-                                            </div>
-                                            <h6 className="mb-0 fw-semibold">{userData?.directId || '0'}</h6>
-                                        </div>
-
-                                        <div className="d-flex align-items-center justify-content-between mb-2">
-                                            <div className="d-flex align-items-center gap-2">
-                                                <div className="p-2" >
-                                                    <i className="ti ti-calendar-stats fs-5" style={{ color: '#1976D2' }}></i>
-                                                </div>
-                                                <h6 className="mb-0 fw-semibold">Level Open</h6>
-                                            </div>
-                                            <h6 className="mb-0 fw-semibold">{userData?.OpenLevel || '0'}</h6>
                                         </div>
 
                                     </div>
                                 </div>
-                            </div>
 
+                            </div>
                         </div>
-                    </div>
 
+                        {/* Right Side - Team/Business Details Card (col-4) */}
+                        <div className="col-12 col-lg-4 d-flex align-items-stretch">
+                            <div className="card w-100">
+                                <div className="card-body p-3">
+                                    <h5 className="card-title fw-semibold mb-3">Team/Business Details</h5>
+
+                                    <div className="d-flex align-items-center justify-content-between mb-2">
+                                        <div className="d-flex align-items-center gap-2">
+                                            <div className="p-2 bg-primary-subtle rounded-2">
+                                                <i className="ti ti-user fs-5 text-primary"></i>
+                                            </div>
+                                            <h6 className="mb-0 fw-semibold">Total Team</h6>
+                                        </div>
+                                        <h6 className="mb-0 fw-semibold">{userData?.TeamCount || '0'}</h6>
+                                    </div>
+
+                                    <div className="d-flex align-items-center justify-content-between mb-2">
+                                        <div className="d-flex align-items-center gap-2">
+                                            <div className="p-2" >
+                                                <i className="ti ti-chart-line fs-5" style={{ color: '#1976D2' }}></i>
+                                            </div>
+                                            <h6 className="mb-0 fw-semibold">Active Team</h6>
+                                        </div>
+                                        <h6 className="mb-0 fw-semibold">{userData?.ActiveTeam || '0'}</h6>
+                                    </div>
+
+                                    <div className="d-flex align-items-center justify-content-between mb-2">
+                                        <div className="d-flex align-items-center gap-2">
+                                            <div className="p-2">
+                                                <i className="ti ti-arrows-exchange fs-5" style={{ color: '#1976D2' }}></i>
+                                            </div>
+                                            <h6 className="mb-0 fw-semibold">Inactive Team</h6>
+                                        </div>
+                                        <h6 className="mb-0 fw-semibold">{userData?.InactiveTeam || '0'}</h6>
+                                    </div>
+
+                                    <div className="d-flex align-items-center justify-content-between mb-2">
+                                        <div className="d-flex align-items-center gap-2">
+                                            <div className="p-2" >
+                                                <i className="ti ti-repeat fs-5" style={{ color: '#1976D2' }}></i>
+                                            </div>
+                                            <h6 className="mb-0 fw-semibold">Active Direct</h6>
+                                        </div>
+                                        <h6 className="mb-0 fw-semibold">{userData?.directId || '0'}</h6>
+                                    </div>
+
+                                    <div className="d-flex align-items-center justify-content-between mb-2">
+                                        <div className="d-flex align-items-center gap-2">
+                                            <div className="p-2" >
+                                                <i className="ti ti-calendar-stats fs-5" style={{ color: '#1976D2' }}></i>
+                                            </div>
+                                            <h6 className="mb-0 fw-semibold">Level Open</h6>
+                                        </div>
+                                        <h6 className="mb-0 fw-semibold">{userData?.OpenLevel || '0'}</h6>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
+
+
 
 
 

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -7,14 +7,9 @@ import { useUser } from '../../context/UserContext';
 import { Link } from 'react-router-dom';
 
 const BotTrading = () => {
-    // -------------------- CONSTANTS --------------------
-    const INTERVAL_MS = 1000;
-    const GAME_DURATION_SEC = 30;
-    const POINTS_IN_ROUND = Math.ceil((GAME_DURATION_SEC * 1000) / INTERVAL_MS);
-
     // -------------------- STATE ENGINE --------------------
     const [botStatus, setBotStatus] = useState({ isRunning: false, progress: 0 });
-    // 🔥 DEFAULT RANDOM CURRENCY
+
     const getRandomCurrencyInit = () => {
         const currencies = ['BTC', 'ETH', 'BNB', 'SOL', 'XRP'];
         return currencies[Math.floor(Math.random() * currencies.length)];
@@ -23,12 +18,11 @@ const BotTrading = () => {
     const [isRoundActive, setIsRoundActive] = useState(false);
     const [selectedSlot, setSelectedSlot] = useState(24);
     const { userData } = useUser();
-    const [, setTimeLeft] = useState(0);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [countdown, setCountdown] = useState(" ");
     const [apiBotStatus, setApiBotStatus] = useState(null);
     const [loading, setLoading] = useState(true);
-    const regno = sessionStorage.getItem('Regno') ;
+    const regno = sessionStorage.getItem('Regno');
     const [showDropdown, setShowDropdown] = useState(false);
     const dropdownRef = useRef(null);
     const { refreshData } = useUser();
@@ -38,6 +32,9 @@ const BotTrading = () => {
     const [lastPrice, setLastPrice] = useState(null);
     const [roundStartIndex, setRoundStartIndex] = useState(null);
     const [roundStartPrice, setRoundStartPrice] = useState(null);
+
+    // 🔴 Always holds the latest price (no stale closure)
+    const lastPriceRef = useRef(null);
 
     // ── 🔴 CURRENCY CONFIG ──
     const getCryptoConfig = (symbol) => {
@@ -51,26 +48,56 @@ const BotTrading = () => {
         return configs[symbol] || configs['BTC'];
     };
 
-    const currentConfig = getCryptoConfig(selectedCurrency);
+    // ── 🔴 FRESH PRICE FETCH (single source of truth) ──
+    const fetchFreshPrice = useCallback(async (binanceSymbol) => {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
+        try {
+            const response = await fetch(
+                `https://api.binance.com/api/v3/ticker/price?symbol=${binanceSymbol}`,
+                { signal: controller.signal }
+            );
+            clearTimeout(timeoutId);
+            if (!response.ok) throw new Error(`Binance ${response.status}`);
+            const data = await response.json();
+            const price = parseFloat(data.price);
+            if (!price || isNaN(price) || price <= 0) throw new Error("Invalid price");
+            return price;
+        } catch (err) {
+            clearTimeout(timeoutId);
+            console.error("❌ Fresh price fetch failed:", err);
+            return null;
+        }
+    }, []);
+
+    // ── 🔴 FETCH LATEST PRICE (chart) — symbol passed explicitly ──
+    const fetchLatestPrice = useCallback(async (binanceSymbol) => {
+        const price = await fetchFreshPrice(binanceSymbol);
+        if (price !== null) {
+            lastPriceRef.current = price;
+            setLastPrice(price);
+            setChartData(prev => {
+                const newData = [...prev, price];
+                if (newData.length > 100) return newData.slice(-90);
+                return newData;
+            });
+        }
+        return price;
+    }, [fetchFreshPrice]);
+
+    // ── 🔴 RESET CHART WHEN CURRENCY CHANGES ──
+    useEffect(() => {
+        setChartData([]);
+        setLastPrice(null);
+        lastPriceRef.current = null;
+        setRoundStartIndex(null);
+        setRoundStartPrice(null);
+    }, [selectedCurrency]);
 
     // ── 🔴 TRADINGVIEW CHART LOADER ──
     useEffect(() => {
-        // Cleanup previous chart
         const container = document.getElementById('tradingview_chart');
         if (container) container.innerHTML = '';
-
-        // Load TradingView script if not loaded
-        if (!document.getElementById('tv-script')) {
-            const script = document.createElement('script');
-            script.id = 'tv-script';
-            script.src = 'https://s3.tradingview.com/tv.js';
-            script.async = true;
-            script.onload = () => initTradingView();
-            document.head.appendChild(script);
-        } else {
-            // Script already loaded, initialize directly
-            initTradingView();
-        }
 
         function initTradingView() {
             if (window.TradingView) {
@@ -91,8 +118,7 @@ const BotTrading = () => {
                     "hide_top_toolbar": true,
                     "hide_volume": true,
                     "save_image": false,
-                    "studies": [
-                    ],
+                    "studies": [],
                     "overrides": {
                         "mainSeriesProperties.candleStyle.upColor": "#26a69a",
                         "mainSeriesProperties.candleStyle.downColor": "#ef5350",
@@ -101,70 +127,38 @@ const BotTrading = () => {
                     }
                 });
 
-                // Update last price when chart loads
+                const cfg = getCryptoConfig(selectedCurrency);
                 setTimeout(() => {
-                    fetchLatestPrice();
+                    fetchLatestPrice(cfg.binanceSymbol);
                 }, 2000);
             }
         }
 
-        // Cleanup on unmount or currency change
-        return () => {
-            const container = document.getElementById('tradingview_chart');
-            if (container) container.innerHTML = '';
-        };
-    }, [selectedCurrency]);
-
-    // ── 🔴 FETCH LATEST PRICE ──
-    const fetchLatestPrice = async () => {
-        try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 5000);
-
-            const response = await fetch(
-                `https://api.binance.com/api/v3/ticker/price?symbol=${currentConfig.binanceSymbol}`,
-                { signal: controller.signal }
-            );
-
-            clearTimeout(timeoutId);
-
-            if (response.ok) {
-                const data = await response.json();
-                const price = parseFloat(data.price);
-                setLastPrice(price);
-                setChartData(prev => {
-                    const newData = [...prev, price];
-                    if (newData.length > 100) return newData.slice(-90);
-                    return newData;
-                });
-                return price;
-            } else {
-                console.warn('Binance API returned:', response.status);
-            }
-        } catch (error) {
-            if (error.name === 'AbortError') {
-                console.warn('⏱️ Price fetch timeout');
-            } else {
-                console.error('Price fetch error:', error);
-            }
+        if (!document.getElementById('tv-script')) {
+            const script = document.createElement('script');
+            script.id = 'tv-script';
+            script.src = 'https://s3.tradingview.com/tv.js';
+            script.async = true;
+            script.onload = () => initTradingView();
+            document.head.appendChild(script);
+        } else {
+            initTradingView();
         }
-        return null;
-    };
 
-    // ── 🔴 PERIODIC PRICE UPDATE ──
+        return () => {
+            const c = document.getElementById('tradingview_chart');
+            if (c) c.innerHTML = '';
+        };
+    }, [selectedCurrency, fetchLatestPrice]);
+
+    // ── 🔴 PERIODIC PRICE UPDATE (always fresh symbol) ──
     useEffect(() => {
+        const cfg = getCryptoConfig(selectedCurrency);
         const interval = setInterval(() => {
-            fetchLatestPrice();
+            fetchLatestPrice(cfg.binanceSymbol);
         }, 5000);
-
         return () => clearInterval(interval);
-    }, [selectedCurrency]);
-
-    // Timer Effect
-    useEffect(() => {
-        const seconds = parseInt(userData?.status, 10);
-        if (!isNaN(seconds)) setTimeLeft(seconds);
-    }, [userData?.status]);
+    }, [selectedCurrency, fetchLatestPrice]);
 
     // Close dropdown on outside click
     useEffect(() => {
@@ -223,6 +217,7 @@ const BotTrading = () => {
         toast.info(` ${slot} Hours selected!`);
     };
 
+    // ── 🔴 START BOT — uses THE SAME LIVE PRICE as chart ──
     const handleStartBot = async () => {
         if (apiBotStatus === 0 || botStatus.isRunning) {
             toast.warning(' Bot is already running!');
@@ -233,77 +228,72 @@ const BotTrading = () => {
             return;
         }
 
-        // ── 🔴 USER KI SELECTED CURRENCY USE KARENGE (jo default random hai) ──
         const finalCurrency = selectedCurrency;
         const config = getCryptoConfig(finalCurrency);
-        
         const betAmount = parseFloat(userData?.Invest) || 100;
-        
-        // ── 🔴 FETCH PRICE FOR SELECTED CURRENCY ──
-        let dynamicCurrencyRate = 0;
-        try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 5000);
-            
-            const response = await fetch(
-                `https://api.binance.com/api/v3/ticker/price?symbol=${config.binanceSymbol}`,
-                { signal: controller.signal }
-            );
-            
-            clearTimeout(timeoutId);
-            
-            if (response.ok) {
-                const data = await response.json();
-                dynamicCurrencyRate = parseFloat(data.price);
-            } else {
-                dynamicCurrencyRate = lastPrice || 0;
-            }
-        } catch (error) {
-            dynamicCurrencyRate = lastPrice || 0;
+
+        setIsSubmitting(true);
+
+        // 🔴 1) Fetch fresh price for THIS currency
+        let livePrice = await fetchFreshPrice(config.binanceSymbol);
+
+        // 🔴 2) Fallback: use the same price shown on the chart
+        if (livePrice === null && lastPriceRef.current !== null) {
+            livePrice = lastPriceRef.current;
+            console.warn("⚠️ Using chart lastPrice as fallback:", livePrice);
         }
+
+        if (livePrice === null) {
+            toast.error(" Live price fetch nahi ho paya. Internet check karo aur dobara try karo.");
+            setIsSubmitting(false);
+            return;
+        }
+
+        // 🔴 3) Logs — verify in console
+        console.log("🎯 Currency:", finalCurrency);
+        console.log("🔗 Binance Symbol:", config.binanceSymbol);
+        console.log("💰 Live price being sent:", livePrice);
 
         const payload = {
             regno: parseInt(regno),
             betAmount: betAmount,
             currency: finalCurrency.toLowerCase(),
-            currencyRate: parseFloat(dynamicCurrencyRate.toFixed(4)),
+            currencyRate: livePrice,   // 🔴 EXACT same as chart
             slot: selectedSlot
         };
-        setIsSubmitting(true);
-       try {
-    const response = await apiClient.post('/Trading/BotTrading', payload);
 
-    if (response.data?.result === "true") {
-        toast.success(`Bot started successfully for ${selectedSlot} hours with ${finalCurrency}!`);
-        await refreshData();
-        setBotStatus({ isRunning: true, progress: 0 });
-        setApiBotStatus(0);
-        setIsRoundActive(true);
+        console.log("📤 FINAL Payload:", JSON.stringify(payload, null, 2));
 
-        if (chartData.length > 0) {
-            const lastIndex = chartData.length - 1;
-            setRoundStartIndex(lastIndex);
-            setRoundStartPrice(chartData[lastIndex]);
+        try {
+            const response = await apiClient.post('/Trading/BotTrading', payload);
+
+            if (response.data?.result === "true") {
+                toast.success(`Bot started for ${selectedSlot} hrs with ${finalCurrency} @ $${livePrice}`);
+                await refreshData();
+                setBotStatus({ isRunning: true, progress: 0 });
+                setApiBotStatus(0);
+                setIsRoundActive(true);
+
+                setRoundStartIndex(chartData.length - 1);
+                setRoundStartPrice(livePrice);
+
+                fetchBotStatus();
+            } else {
+                toast.error(response.data?.message || "Bot start failed");
+            }
+        } catch (error) {
+            toast.error(
+                error?.response?.data?.message ||
+                error?.message ||
+                "Something went wrong"
+            );
+        } finally {
+            setIsSubmitting(false);
         }
-
-        fetchBotStatus();
-    } else {
-        toast.error(response.data?.message);
-    }
-} catch (error) {
-    toast.error(
-        error?.response?.data?.message ||
-        error?.message ||
-        "Something went wrong"
-    );
-} finally {
-    setIsSubmitting(false);
-}
     };
 
     return (
         <div className="row">
-            {/* ── 🔴 TRADINGVIEW CHART ── */}
             <div className="col-12">
                 <div className="">
                     <div className="card-body p-0">
@@ -314,18 +304,15 @@ const BotTrading = () => {
                                 height: "500px",
                                 background: "#131722"
                             }}
-                        >
-                        </div>
-                        {/* ── 🔴 TOP SECTION ── */}
+                        ></div>
+
                         <div className="col-12">
                             <div className="card shadow-sm border-0" style={{ borderRadius: '16px' }}>
                                 <div className="card-body" style={{
                                     background: 'linear-gradient(145deg, #f8fafc, #e2e8f0)',
                                     borderRadius: '16px'
                                 }}>
-                                    {/* ── 🔴 ALL IN ONE ROW ── */}
                                     <div className="d-flex align-items-center justify-content-between gap-3 flex-wrap">
-                                        {/* Left - Total Balance */}
                                         <div style={{ flexShrink: 0 }}>
                                             <h4 className="mb-0">Total Balance</h4>
                                             <Link to="/dashboard/BotTradingHistory">
@@ -334,7 +321,7 @@ const BotTrading = () => {
                                                 </h3>
                                             </Link>
                                         </div>
-                                        {/* Right - BOT STATUS BUTTON */}
+
                                         {!loading && (
                                             <div style={{ flexShrink: 0 }}>
                                                 {apiBotStatus === 0 ? (
@@ -377,9 +364,8 @@ const BotTrading = () => {
                                                 )}
                                             </div>
                                         )}
-                                        {/* Center - Crypto Selector + Slot */}
+
                                         <div className="d-flex align-items-center gap-2 flex-wrap">
-                                            {/* ── 🔴 CRYPTO SELECTOR - NO "Select Crypto" OPTION ── */}
                                             <select
                                                 className="form-select text-uppercase fw-bold"
                                                 value={selectedCurrency}
@@ -401,7 +387,6 @@ const BotTrading = () => {
                                                 <option value="XRP">✕ XRP</option>
                                             </select>
 
-                                            {/* Slot Dropdown */}
                                             <div ref={dropdownRef} style={{ position: 'relative', flexShrink: 0 }}>
                                                 <button
                                                     onClick={() => setShowDropdown(!showDropdown)}

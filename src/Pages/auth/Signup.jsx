@@ -33,6 +33,7 @@ const Signup = () => {
   const [isOtpMode, setIsOtpMode] = useState(false);
   const [otpStatus, setOtpStatus] = useState(null);
   const [resendTimer, setResendTimer] = useState(0);
+  const [sponsorNameDisplay, setSponsorNameDisplay] = useState("");
   const emailInputRef = useRef(null);
   const otpCheckTimeout = useRef(null);
   const timerInterval = useRef(null);
@@ -315,42 +316,50 @@ const Signup = () => {
   };
 
   // ==================== FETCH SPONSOR ====================
-  const fetchSponsorDetails = async (sponsorId) => {
-    if (!sponsorId || !sponsorId.trim()) return;
+const fetchSponsorDetails = async (sponsorId) => {
+  if (!sponsorId || !sponsorId.trim()) {
+    setSponsorNameDisplay("");
+    return;
+  }
 
-    try {
-      const response = await apiClient.get(`/Auth/UserDetailsById?loingId=${sponsorId}`);
-      if (response.data?.result === "true" && response.data.user) {
-        // const sponsorName = response.data.user.fName || response.data.user.LoginID;
-            const sponsorName = "✓ Verified ";
+  try {
+    const response = await apiClient.get(`/Auth/UserDetailsById?loingId=${sponsorId}`);
+    if (response.data?.result === "true" && response.data.user) {
+      const sponsorName = response.data.user.fName || response.data.user.LoginID;
 
-        setFormData(prev => ({
-          ...prev,
-          sponsorName: sponsorName,
-          referrer: sponsorName,
-          introRegNo: response.data.user.regNo,
-        }));
+      // ✅ Actual name → formData (API me jayega)
+      setFormData(prev => ({
+        ...prev,
+        sponsorName: sponsorName,       // asli naam
+        referrer: sponsorName,
+        introRegNo: response.data.user.regNo,
+      }));
 
-        showSuccessToast(`Sponsor: ${sponsorName}`);
-      } else {
-        setFormData(prev => ({
-          ...prev,
-          sponsorName: "Invalid Sponsor",
-          referrer: "",
-          introRegNo: ""
-        }));
-        showErrorToast(" Invalid Sponsor ID!");
-      }
-    } catch (err) {
-      console.error(" Fetch error:", err);
+      // ✅ Display name → sirf UI ke liye
+      setSponsorNameDisplay(`✓ Verified `);
+
+      showSuccessToast(`Sponsor: ✓ Verified `);
+    } else {
       setFormData(prev => ({
         ...prev,
         sponsorName: "Invalid Sponsor",
         referrer: "",
         introRegNo: ""
       }));
+      setSponsorNameDisplay("Invalid Sponsor");
+      showErrorToast(" Invalid Sponsor ID!");
     }
-  };
+  } catch (err) {
+    console.error("Fetch error:", err);
+    setFormData(prev => ({
+      ...prev,
+      sponsorName: "Invalid Sponsor",
+      referrer: "",
+      introRegNo: ""
+    }));
+    setSponsorNameDisplay("Network Error");
+  }
+};
 
   // ==================== URL REF CODE ====================
   useEffect(() => {
@@ -467,7 +476,7 @@ const Signup = () => {
       email: formData.email.trim().toLowerCase(),
       password: formData.password,
       address: formData.address || "N/A",
-      referrer: formData.referrer.trim() || formData.sponsorName || "apexmindai",
+      referrer: formData.referrer.trim() || formData.sponsorName,
       referrer_Id: formData.referrer_Id.toString(),
       affiliate_Level: parseInt(formData.affiliate_Level) || 1,
       countryId: formData.countryId,
@@ -611,21 +620,25 @@ const Signup = () => {
                         </div>
                       </div>
 
-                      <div className="col-lg-12">
-                        <div className="form-box">
-                          <input
-                            type="text"
-                            value={formData.sponsorName}
-                            readOnly
-                            placeholder="Sponsor Name"
-                            className="readonly-input"
-                            style={{
-                              color: formData.sponsorName === "Invalid Sponsor" || formData.sponsorName === "Network Error" ? "#ff0000" : "#008202",
-                              fontWeight: "600"
-                            }}
-                          />
-                        </div>
-                      </div>
+             <div className="col-lg-12">
+  <div className="form-box">
+    <input
+      type="text"
+      value={sponsorNameDisplay}
+      readOnly
+      placeholder="Sponsor Name"
+      className="readonly-input"
+      style={{
+        color:
+          sponsorNameDisplay === "Invalid Sponsor" ||
+          sponsorNameDisplay === "Network Error"
+            ? "#ff0000"
+            : "#008202",
+        fontWeight: "600",
+      }}
+    />
+  </div>
+</div>
 
                       <div className="col-lg-12 ">
                         <div className="form-box">

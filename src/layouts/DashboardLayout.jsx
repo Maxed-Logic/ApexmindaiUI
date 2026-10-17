@@ -32,6 +32,9 @@ import IncomePayOutHistory from '../Pages/dashboard/IncomePayOutHistory'
 import '../assets/Main.css'
 import Reward from '../Pages/dashboard/Reward';
 import FundDepositStatus from '../Pages/dashboard/FundDepositStatus';
+import Investmonth from '../Pages/dashboard/InvestFund/Investmonth';
+import CapitalPayoutReport from '../Pages/dashboard/Bot3PayoutReport';
+import Bot3PayoutReport from '../Pages/dashboard/Bot3PayoutReport';
 
 function DashboardLayout() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -90,6 +93,7 @@ function DashboardLayout() {
             <Route path="SocalMediaTask" element={<SocalMediaTask />} />
             <Route path="SocalMediaTaskHistory" element={<SocalMediaTaskHistory />} />
             <Route path="InvestFund" element={<InvestFund />} />
+            <Route path="InvestFundForMoonthly" element={<Investmonth/>} />
             <Route path="DepositFund" element={<DepositFund />} />
             <Route path="IncomePayOutHistory" element={<IncomePayOutHistory/>} />
             <Route path="Fundtransfer" element={<Fundtransfer />} />
@@ -109,6 +113,7 @@ function DashboardLayout() {
             <Route path="SelfTradingHistory" element={<SelfTradingHistory/>} />
             <Route path="Reward" element={<Reward/>} />
             <Route path="FundDepositStatus" element={<FundDepositStatus/>} />
+             <Route path="Bot3PayoutReport" element={<Bot3PayoutReport/>} />
           </Routes>
         </div>
       </div>

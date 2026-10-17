@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
 import { Wallet, History, Copy, Share2, Smartphone, AlertCircle, CheckCircle, Clock } from 'lucide-react';
@@ -10,7 +10,6 @@ import { useUser } from '../../context/UserContext';
 
 const DepositFund = () => {
     const { userData, refreshData } = useUser();
-    
     const [walletAddress, setWalletAddress] = useState(null);
     const [loading, setLoading] = useState(true);
     const [confirmLoading, setConfirmLoading] = useState(false);
@@ -18,73 +17,99 @@ const DepositFund = () => {
 
     const [timeLeft, setTimeLeft] = useState(300);
     const [isTimerRunning, setIsTimerRunning] = useState(true);
-    const [autoCheckCount, setAutoCheckCount] = useState(0);
     const [isTimerComplete, setIsTimerComplete] = useState(false);
+
+    // Track if ConfirmDeposit is successful
+    const [isConfirmSuccess, setIsConfirmSuccess] = useState(false);
+
+    const [isModalShown, setIsModalShown] = useState(false);
+    const modalShownRef = useRef(false);
+
+    // 🔴 NEW: Track if ConfirmDeposit has returned true (only once)
+    const isDepositConfirmedRef = useRef(false);
+
+    // 🔴 NEW: Track if FundDeposit has been called (only once)
+    const [isFundDepositCalled, setIsFundDepositCalled] = useState(false);
 
     const regno = sessionStorage.getItem('Regno');
 
-    // FundDeposit API Call
+    // ============================================================
+    // FUNDDEPOSIT API CALL - SIRF 1 BAAR
+    // ============================================================
     const callFundDepositAPI = async () => {
-        if (!walletAddress || !regno) {
-            console.warn('⚠️ Missing walletAddress or regno');
+        // Agar already called hai toh return
+        if (isFundDepositCalled) {
             return;
-        }       
+        }
+
+        if (modalShownRef.current) {
+            return;
+        }
+
         try {
             const payload = {
                 walletAddress: walletAddress,
                 regno: parseInt(regno)
             };
 
+
             const response = await apiClient.post('/DepositReport/FundDeposit', payload);
-            console.log('FundDeposit API Response:', response.data);
+
+            if ((response.data?.result === "true" || response.data?.result === true) && !modalShownRef.current) {
+                modalShownRef.current = true;
+                setIsModalShown(true);
+
+                showSuccessModal(response.data?.message || 'Deposit confirmed successfully!');
+
+                setIsConfirmSuccess(false);
+
+                await refreshData();
+            }
 
         } catch (err) {
-            console.error(' FundDeposit API Error:', err);
             if (err.response) {
-                console.error('Error Response Data:', err.response.data);
-                console.error('Error Status:', err.response.status);
+                console.error(err.response.data);
+                console.error(err.response.status);
             }
         }
     };
 
-    // NEW: Call FundDeposit API every 60 seconds
+    // ============================================================
+    // FUNDDEPOSIT EFFECT - SIRF 1 BAAR CALL HOGA
+    // ============================================================
     useEffect(() => {
         if (!walletAddress || !regno) return;
+        if (!isConfirmSuccess) return;
 
-        // Call immediately on mount
+        // Agar FundDeposit already called hai toh return
+        if (isFundDepositCalled) {
+            return;
+        }
+        if (modalShownRef.current) {
+            return;
+        }
+
+        setIsFundDepositCalled(true); // Mark as called
         callFundDepositAPI();
 
-        // Set interval for every 60 seconds
-        const intervalId = setInterval(() => {
-            callFundDepositAPI();
-        }, 60000); // 60,000 ms = 1 minute
+    }, [walletAddress, regno, isConfirmSuccess]);
 
-        // Cleanup interval on unmount
-        return () => {
-            if (intervalId) clearInterval(intervalId);
-        };
-    }, [walletAddress, regno]); // Re-run if walletAddress or regno changes
-
-    // Fetch wallet address
+    // ============================================================
+    // FETCH WALLET ADDRESS
+    // ============================================================
     useEffect(() => {
         const fetchAddress = async () => {
             try {
                 setLoading(true);
                 setError(null);
 
-                if (userData?.NameAppearOncheque) {
-                    setWalletAddress(userData.NameAppearOncheque);
-                    setLoading(false);
-                    return;
-                }
-
                 const response = await apiClient.get(`/DepositReport/DepositAddress/${regno}`);
                 if (response.data?.result === "true") {
                     const walletId = response.data.response?.walletid;
                     if (walletId && walletId !== 'null') {
                         setWalletAddress(walletId);
-                    } else { 
-                        setError("No wallet address found"); 
+                    } else {
+                        setError("No wallet address found");
                     }
                 } else {
                     setError(response.data?.message || "Failed to fetch address");
@@ -96,9 +121,11 @@ const DepositFund = () => {
             }
         };
         fetchAddress();
-    }, [regno, userData?.NameAppearOncheque]);
+    }, [regno]);
 
-    // Timer with auto-check
+    // ============================================================
+    // TIMER - CONFIRMDEPOSIT HAR 30 SECONDS PAR CALL HOGA
+    // ============================================================
     useEffect(() => {
         let timer = null;
 
@@ -107,13 +134,21 @@ const DepositFund = () => {
                 setTimeLeft(prev => {
                     const newTime = prev - 1;
 
-                    if (newTime % 60 === 0 && newTime < 300 && newTime > 0) {
+                    // 🔴 CONFIRM DEPOSIT - HAR 30 SECONDS PAR CALL
+                    // 🔴 SIRF TAB JAB DEPOSIT CONFIRM NA HUA HO
+                    if (
+                        newTime % 30 === 0 &&
+                        newTime < 300 &&
+                        newTime > 0 &&
+                        !isDepositConfirmedRef.current
+                    ) {
                         confirmDeposit(false);
                     }
 
                     if (newTime <= 0) {
                         setIsTimerRunning(false);
                         setIsTimerComplete(true);
+                        showTimerExpireModal();
                         return 0;
                     }
                     return newTime;
@@ -126,12 +161,40 @@ const DepositFund = () => {
         };
     }, [isTimerRunning, timeLeft]);
 
-    // Show Success Modal
+    // ============================================================
+    // TIMER EXPIRE MODAL
+    // ============================================================
+    const showTimerExpireModal = () => {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Timer Expired!',
+            text: 'Your timer has expired. Please refresh the page.',
+            confirmButtonColor: '#dc3545',
+            confirmButtonText: 'Refresh Page',
+            backdrop: 'rgba(0,0,0,0.7)',
+            zIndex: 9999999,
+            width: '450px',
+            padding: '2.5rem',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.reload();
+            }
+        });
+    };
+
+    // ============================================================
+    // SUCCESS MODAL - SIRF 1 BAAR DIKHEGA
+    // ============================================================
     const showSuccessModal = (message) => {
+        modalShownRef.current = true;
+        setIsModalShown(true);
+
         Swal.fire({
             icon: 'success',
-            title: '🎉 Deposit Confirmed!',
-            text: message || 'Your deposit has been confirmed successfully!',
+            title: 'Deposit Confirmed!',
+            text: message || 'Your deposit has been successfully confirmed!',
             confirmButtonColor: '#28a745',
             confirmButtonText: 'OK, Got it!',
             backdrop: 'rgba(0,0,0,0.7)',
@@ -140,68 +203,49 @@ const DepositFund = () => {
             padding: '2.5rem',
             allowOutsideClick: false,
             allowEscapeKey: false,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                setIsConfirmSuccess(false);
+            }
         });
     };
 
-    // Confirm Deposit
+    // ============================================================
+    // CONFIRM DEPOSIT - HAR 30 SECONDS PAR CALL HOGA
+    // 🔴 SIRF EK BAAR TRUE MILEGA, USKE BAAD CALL NAHI HOGA
+    // ============================================================
     const confirmDeposit = async (isManual = false) => {
-        if (!walletAddress || !regno) {
-            if (isManual) toast.error("Required data missing");
+        // 🔴 Agar already confirmed hai toh API call mat karo
+        if (isDepositConfirmedRef.current) {
             return;
         }
 
-        if (isManual) {
-            setConfirmLoading(true);
-        }
-
         try {
-            if (!isManual) {
-                setAutoCheckCount(prev => prev + 1);
-            }
-
             const payload = {
                 walletAddress: walletAddress,
                 regno: parseInt(regno)
             };
 
             const response = await apiClient.post('/DepositReport/ConfirmDeposit', payload);
-            if (response.data?.result === "true" || response.data?.result === true) {
-                showSuccessModal(response.data?.message || 'Deposit confirmed successfully!');
-                
-                await refreshData();
 
-                if (isManual) {
-                    setTimeLeft(300);
-                    setIsTimerRunning(true);
-                    setAutoCheckCount(0);
-                    setIsTimerComplete(false);
-                } else {
-                    setIsTimerRunning(false);
-                    setTimeLeft(0);
-                    setIsTimerComplete(false);
-                }
+            // SIRF TRUE HONE PAR FUNDDEPOSIT CALL HOGA
+            if (response.data?.result === "true" || response.data?.result === true) {
+                // 🔴 Flag set karo - ab dobara API call nahi hogi
+                isDepositConfirmedRef.current = true;
+
+                setIsConfirmSuccess(true);
+                await refreshData();
                 return;
             }
 
-            if (isManual) {
-                if (response.data?.message?.toLowerCase().includes('hash already exists')) {
-                    toast.error('This deposit has already been confirmed.');
-                } else {
-                    toast.error(response.data?.message || "Confirmation failed");
-                }
-            }
         } catch (err) {
-            console.error(`Confirm ERROR (${isManual ? 'Manual' : 'Auto'}):`, err);
-            if (isManual) {
-                toast.error(err.response?.data?.message || "Server error. Please try again.");
-            }
-        } finally {
-            if (isManual) {
-                setConfirmLoading(false);
-            }
+            console.error(err.response?.data?.message || err.message);
         }
     };
 
+    // ============================================================
+    // HELPER FUNCTIONS
+    // ============================================================
     const formatTime = (seconds) => {
         const mins = Math.floor(seconds / 60);
         const secs = seconds % 60;
@@ -240,7 +284,6 @@ const DepositFund = () => {
                     text: `Wallet Address: ${walletAddress}`,
                     url: window.location.href
                 });
-                toast.success("Shared successfully!");
             } catch (error) {
                 if (error.name === 'AbortError') return;
                 console.error('Share error:', error);
@@ -259,6 +302,9 @@ const DepositFund = () => {
         return `${address.slice(0, 11)}...${address.slice(-11)}`;
     };
 
+    // ============================================================
+    // RENDER
+    // ============================================================
     return (
         <>
             <Toast />
@@ -283,6 +329,7 @@ const DepositFund = () => {
                     </div>
 
                     <div className="unique-df-content-body">
+
                         <div className="unique-df-qr-section">
                             <div className="unique-df-qr-frame">
                                 {loading ? (
@@ -339,25 +386,19 @@ const DepositFund = () => {
 
                                     <button
                                         className={`btn-primary unique-df-confirm-btn ${confirmLoading ? 'loading' : ''}`}
-                                        onClick={isTimerComplete ? () => confirmDeposit(true) : null}
+                                        onClick={isTimerComplete ? () => {
+                                            confirmDeposit(true);
+                                        } : null}
                                         disabled={confirmLoading || (!isTimerComplete && isTimerRunning)}
                                         style={{
                                             cursor: isTimerComplete ? 'pointer' : 'default',
                                             opacity: isTimerComplete ? 1 : 0.8
                                         }}
                                     >
-                                        {confirmLoading ? (
-                                            <div className="df-mini-spinner"></div>
-                                        ) : isTimerComplete ? (
-                                            <><CheckCircle size={20} /> Confirm Deposit</>
-                                        ) : (
-                                            <>
-                                                <Clock size={20} />
-                                                <span style={{ fontSize: '20px', fontWeight: 'bold' }}>
-                                                    {formatTime(timeLeft)}
-                                                </span>
-                                            </>
-                                        )}
+                                        <Clock size={20} />
+                                        <span style={{ fontSize: '20px', fontWeight: 'bold' }}>
+                                            {formatTime(timeLeft)}
+                                        </span>
                                     </button>
                                 </div>
                             </div>

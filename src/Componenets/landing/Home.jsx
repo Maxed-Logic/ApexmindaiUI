@@ -17,7 +17,7 @@ import ellipse1Img from '../../assets/images/ellipse-1.png';
 import ellipse2Img from '../../assets/images/ellipse-2.png';
 import rocketImg from '../../assets/images/rocket.png';
 import globeImg from '../../assets/images/globe.png';
-import bannerCoinImg from '../../assets/images/banner-coin.png';
+// import bannerCoinImg from '../../assets/images/banner-coin.png';
 import coin1Img from '../../assets/images/coin-1.png';
 
 // Explore Section Icons
@@ -34,7 +34,7 @@ import tryImg from '../../assets/images/try.png';
 // FAQ Section
 import faqImg from '../../assets/images/faq/faqimg-Photoroom.png';
 import { Link } from 'react-router-dom';
-import { FaFacebook, FaInstagram, FaWhatsapp, FaYoutube } from 'react-icons/fa';
+import { FaFacebook, FaInstagram,  FaYoutube } from 'react-icons/fa';
 
 const LandingPage = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -202,7 +202,6 @@ const LandingPage = () => {
   </button>
 </div>
         </div>
-        {/* Mobile Menu */}
       {/* Mobile Menu */}
 <div className={`fixed h-screen overflow-y-auto bg-accent51 lg:hidden top-0 left-0 z-50 duration-300 p-4 w-[400px] ${mobileMenu ? 'translate-x-0' : '-translate-x-full'}`}>
   <div className="flex justify-between items-center mb-6">

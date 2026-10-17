@@ -41,6 +41,7 @@
     "react-toastify": "^11.1.0",
     "simplebar": "^6.3.3",
     "sweetalert2": "^11.26.25",
+    "swiper": "^14.3.0",
     "three": "^0.186.0",
     "ws": "^8.21.0"
   },

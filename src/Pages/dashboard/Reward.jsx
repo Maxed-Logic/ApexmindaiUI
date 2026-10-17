@@ -466,62 +466,62 @@ const Reward = () => {
 
 
       `}</style>
-      
 
-      <div className="reward-wrapper">  
+
+      <div className="reward-wrapper">
         <div className="reward-container">
-         {/* INFO BANNER / NOTE - Fixed Design */}
-{/* INFO BANNER - Compact Inline */}
-<div
-  className="mb-3"
-  style={{
-    background: "linear-gradient(135deg, #0d6efd, #3b82f6)",
-    borderLeft: "6px solid #ffc107",
-    borderRadius: "12px",
-    padding: "10px 20px",
-    color: "#fff",
-    boxShadow: "0 6px 16px rgba(0,0,0,0.15)",
-  }}
->
-  <div
-    style={{
-      display: "flex",
-      alignItems: "center",
-      marginBottom: "8px",
-      fontSize: "1rem",
-      fontWeight: "700",
-    }}
-  >
-    <i
-      className="bi bi-info-circle-fill me-2"
-      style={{ color: "green", fontSize: "1.3rem" }}
-    ></i>
-    <span>Important Note</span>
-  </div>
+          {/* INFO BANNER / NOTE - Fixed Design */}
+          {/* INFO BANNER - Compact Inline */}
+          <div
+            className="mb-3"
+            style={{
+              background: "linear-gradient(135deg, #0d6efd, #3b82f6)",
+              borderLeft: "6px solid #ffc107",
+              borderRadius: "12px",
+              padding: "10px 20px",
+              color: "#fff",
+              boxShadow: "0 6px 16px rgba(0,0,0,0.15)",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginBottom: "8px",
+                fontSize: "1rem",
+                fontWeight: "700",
+              }}
+            >
+              <i
+                className="bi bi-info-circle-fill me-2"
+                style={{ color: "green", fontSize: "1.3rem" }}
+              ></i>
+              <span>Important Note</span>
+            </div>
 
-  <div style={{ fontSize: "0.92rem", lineHeight: "1.3" }}>
-    <div className="mb-2">
-      <i
-        className="bi bi-trophy-fill me-2"
-        style={{ color: "#FFD700" }}
-      ></i>
-      <strong>Reward:</strong>{" "}
-      Rewards are granted <strong>only once</strong> after you successfully
-      meet all the required qualification criteria.
-    </div>
+            <div style={{ fontSize: "0.92rem", lineHeight: "1.3" }}>
+              <div className="mb-2">
+                <i
+                  className="bi bi-trophy-fill me-2"
+                  style={{ color: "#FFD700" }}
+                ></i>
+                <strong>Reward:</strong>{" "}
+                Rewards are granted <strong>only once</strong> after you successfully
+                meet all the required qualification criteria.
+              </div>
 
-    <div>
-      <i
-        className="bi bi-cash-stack me-2"
-        style={{ color: "#7CFC00" }}
-      ></i>
-      <strong>Salary:</strong>{" "}
-      Salary is paid <strong>every month</strong> as long as you continue to
-      meet all the required conditions and maintain the reward rank you have
-      achieved.
-    </div>
-  </div>
-</div>
+              <div>
+                <i
+                  className="bi bi-cash-stack me-2"
+                  style={{ color: "#7CFC00" }}
+                ></i>
+                <strong>Salary:</strong>{" "}
+                Salary is paid <strong>every month</strong> as long as you continue to
+                meet all the required conditions and maintain the reward rank you have
+                achieved.
+              </div>
+            </div>
+          </div>
           <div className="row g-3">
             {data.length > 0 ? (
               data.map((item, index) => {
@@ -531,7 +531,6 @@ const Reward = () => {
                 const isUnqualifiedStatus = isUnqualified(item.rStatus);
 
                 // Define target for each leg (1500 as per requirement)
-                const REQUIRED_DOWNLINE = 1500;
 
                 // Leg data with validation
                 const legs = [
@@ -558,7 +557,7 @@ const Reward = () => {
                 ];
 
                 // Calculate qualified legs count
-                const qualifiedLegs = legs.filter(leg => leg.value >= REQUIRED_DOWNLINE).length;
+                const qualifiedLegs = legs.filter(leg => leg.value >= item.rcount).length;
                 const totalLegs = legs.length;
                 const downlineProgress = (qualifiedLegs / totalLegs) * 100;
 
@@ -596,7 +595,7 @@ const Reward = () => {
                 }
 
                 return (
-                  
+
                   <div className="col-lg-6 col-md-6 mb-3" key={item.rid || index}>
                     <div className={cardClass}>
                       {/* Compact Header */}
@@ -604,7 +603,7 @@ const Reward = () => {
                         <div className="d-flex justify-content-between align-items-center">
                           <div className="flex-grow-1" style={{ minWidth: 0, paddingRight: '0.5rem' }}>
                             <h5 className="fw-bold text-white d-flex gap-2">
-                              <FaRankingStar  style={{fontSize:"20px"}}/>
+                              <FaRankingStar style={{ fontSize: "20px" }} />
                               {item.reward || "Reward"}
                             </h5>
                             {/* <small className="d-flex align-items-center text-white">
@@ -712,55 +711,55 @@ const Reward = () => {
                         </div>
 
                         {/* salary section */}
-{/* Salary Section - Redesigned with Bootstrap */}
-<div className="bg-dark bg-gradient rounded-3 p-3 mb-3 border border-warning border-opacity-25 shadow-lg" 
-     style={{ position: 'relative', overflow: 'hidden' }}>
-  
-  {/* Decorative shine effect */}
-  <div className="position-absolute top-0 end-0 w-25 h-100 opacity-10"
-       style={{
-         background: 'radial-gradient(circle, rgba(86, 94, 247, 0.2) 0%, transparent 70%)',
-         transform: 'translateX(30%)'
-       }}>
-  </div>
-  
-  <div className="d-flex justify-content-between align-items-center position-relative" style={{ zIndex: 1 }}>
-    <div>
-      <div className="d-flex align-items-center gap-2">
-        <i className="bi bi-wallet2 text-warning"></i>
-        <span className="text-white small text-uppercase fw-semibold tracking-wide" 
-              style={{ letterSpacing: '0.5px', fontSize: '0.7rem' }}>
-          Monthly Salary
-        </span>
-      </div>
-     
-    </div>
-    
-    <div className="text-end">
-      <div className="d-flex align-items-center gap-2">
-        <i className="bi bi-gift-fill text-warning" style={{ fontSize: '1.5rem' }}></i>
-        <span className="display-6 fw-bold text-warning" 
-              style={{ 
-                fontSize: '2rem', 
-                lineHeight: 1,
-                textShadow: '0 0 20px rgba(255,215,0,0.2)'
-              }}>
-          ${Number(item.SalaryAmt || 0).toLocaleString()}
-        </span>
-      </div>
-      <div className="text-white small" style={{ fontSize: '0.55rem' }}>
-        <i className="bi bi-calendar3 me-1"></i>
-      / Monthly      </div>
-    </div>
-  </div>
-</div>
+                        {/* Salary Section - Redesigned with Bootstrap */}
+                        <div className="bg-dark bg-gradient rounded-3 p-3 mb-3 border border-warning border-opacity-25 shadow-lg"
+                          style={{ position: 'relative', overflow: 'hidden' }}>
 
- 
+                          {/* Decorative shine effect */}
+                          <div className="position-absolute top-0 end-0 w-25 h-100 opacity-10"
+                            style={{
+                              background: 'radial-gradient(circle, rgba(86, 94, 247, 0.2) 0%, transparent 70%)',
+                              transform: 'translateX(30%)'
+                            }}>
+                          </div>
+
+                          <div className="d-flex justify-content-between align-items-center position-relative" style={{ zIndex: 1 }}>
+                            <div>
+                              <div className="d-flex align-items-center gap-2">
+                                <i className="bi bi-wallet2 text-warning"></i>
+                                <span className="text-white small text-uppercase fw-semibold tracking-wide"
+                                  style={{ letterSpacing: '0.5px', fontSize: '0.7rem' }}>
+                                  Monthly Salary
+                                </span>
+                              </div>
+
+                            </div>
+
+                            <div className="text-end">
+                              <div className="d-flex align-items-center gap-2">
+                                <i className="bi bi-gift-fill text-warning" style={{ fontSize: '1.5rem' }}></i>
+                                <span className="display-6 fw-bold text-warning"
+                                  style={{
+                                    fontSize: '2rem',
+                                    lineHeight: 1,
+                                    textShadow: '0 0 20px rgba(255,215,0,0.2)'
+                                  }}>
+                                  ${Number(item.SalaryAmt || 0).toLocaleString()}
+                                </span>
+                              </div>
+                              <div className="text-white small" style={{ fontSize: '0.55rem' }}>
+                                <i className="bi bi-calendar3 me-1"></i>
+                                / Monthly      </div>
+                            </div>
+                          </div>
+                        </div>
+
+
 
                         {/* Legs Grid - Compact with Validation */}
                         <div className="row g-2 mb-2-compact mt-1">
                           {legs.map((leg, legIndex) => {
-                            const isLegQualified = leg.value >= REQUIRED_DOWNLINE;
+                            const isLegQualified = leg.value >= item.rcount;
 
                             return (
                               <div className="col-6 col-md-3" key={legIndex}>

@@ -19,6 +19,7 @@
 
     return (
       <>
+
       
         {/* {!isAuthPage && <Header/>} */}
         <main className="landing-main">
