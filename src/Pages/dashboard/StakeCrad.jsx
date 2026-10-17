@@ -213,11 +213,7 @@ const Stakecard = () => {
         >
           {stakes.map((stake) => {
             const totalIncome = Number(stake.BinaryBuffer) || 0;
-<<<<<<< HEAD
-            const paidAmount = Number(stake.perDay) || 0;     
-=======
-            const paidAmount = Number(stake.AmtPaid) || 0;
->>>>>>> origin/main
+            const paidAmount = Number(stake.perDay) || 0;          
             const pendingAmount = totalIncome - paidAmount;
 
             const chartData = {
