@@ -14,6 +14,7 @@ import { useUser } from '../../../context/UserContext';
 import Toast from '../../../Componenets/ui/Toast';
 import "../InvestFund/Invest.css"
 import StakeCrad from '../StakeCrad';
+import { Link } from 'react-router-dom';
 
 const Investmonth = () => {
   const { fetchData } = useUser();
@@ -184,19 +185,12 @@ const Investmonth = () => {
 
             <div className="d-flex flex-wrap align-items-center gap-3">
               <div className="investMonthTrust">
-                <TrendingUp size={20} />
-                <span>Stable<br />Income</span>
+                <Link to="/dashboard/Bot3PayoutReport">
+                <button className='btn btn-primary' >Report</button>
+                </Link>
               </div>
 
-              <div className="investMonthTrust">
-                <ShieldCheck size={20} />
-                <span>Secure<br />&amp; Trusted</span>
-              </div>
-
-              <div className="investMonthTrust">
-                <CalendarDays size={20} />
-                <span>Monthly<br />Plan</span>
-              </div>
+              
             </div>
           </div>
 

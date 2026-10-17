@@ -121,7 +121,9 @@ export const UserProvider = ({ children }) => {
           TotalEarnTokenInWallet: apiData.TotalEarnTokenInWallet || 0,
           NameAppearOncheque: apiData.NameAppearOncheque,
           TokenAddress: apiData.tokenAddress || 0,
-          TradingLevelIncome: apiData.TradingLevelIncome || 0
+          TradingLevelIncome: apiData.TradingLevelIncome || 0,
+          selfBot3Invest : apiData.selfBot3Invest||0,
+          teamBot3Invest: apiData.teamBot3Invest || 0
         };
 
         setUserData(newUserData);

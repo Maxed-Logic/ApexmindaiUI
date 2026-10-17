@@ -1359,7 +1359,7 @@ const Dashboard = () => {
                                     <div className="card-body02 bonus-card p-3">
                                         <div className="d-flex justify-content-between align-items-start mb-2">
                                             <div>
-                                                <p className=" mb-1">Bot Income</p>
+                                                <p className=" mb-1 text-dark fw-bold">Bot Income</p>
                                                 <div className="amount-report">
                                                     ${userData?.AIBOTIncome?.toLocaleString() || '0.00'}
                                                 </div>
@@ -1378,7 +1378,7 @@ const Dashboard = () => {
                                     <div className="card-body02 bonus-card01 p-3">
                                         <div className="d-flex justify-content-between align-items-start mb-2">
                                             <div>
-                                                <p className=" mb-1">Trading Level Bonus</p>
+                                                <p className=" mb-1 text-dark fw-bold">Trading Level Bonus</p>
                                                 <h5 className="fw-bold mb-0 amount-report">
                                                     ${userData?.TradingLevelIncome?.toLocaleString() || '0.00'}
                                                 </h5>
@@ -1397,7 +1397,7 @@ const Dashboard = () => {
                                     <div className="card-body02 bonus-card p-3">
                                         <div className="d-flex  justify-content-between align-items-start mb-2">
                                             <div>
-                                                <p className=" mb-1">Sponsor Bonus</p>
+                                                <p className=" mb-1 text-dark fw-bold">Sponsor Bonus</p>
                                                 <h5 className="fw-bold mb-0 amount-report">
                                                     ${userData?.SponsorIncome?.toLocaleString() || '0.00'}
                                                 </h5>
@@ -1422,7 +1422,7 @@ const Dashboard = () => {
                                         <div className="d-flex justify-content-between align-items-start mb-2">
                                             <div className="text-decoration-none w-100">
                                                 <div>
-                                                    <p className=" mb-1">Salary</p>
+                                                    <p className=" mb-1 text-dark fw-bold">Salary</p>
                                                     <h5 className="fw-bold mb-0 amount-report">
                                                         ${userData?.Salary?.toLocaleString() || '0.00'}
                                                     </h5>
@@ -1442,7 +1442,7 @@ const Dashboard = () => {
                                     <div className="card-body02 bonus-card p-3">
                                         <div className="d-flex justify-content-between align-items-start mb-2">
                                             <div>
-                                                <p className=" mb-1">Reward</p>
+                                                <p className=" mb-1 text-dark fw-bold">Reward</p>
                                                 <h5 className="fw-bold mb-0 amount-report">
                                                     ${userData?.Reward?.toLocaleString() || '0.00'}
                                                 </h5>
@@ -1461,9 +1461,9 @@ const Dashboard = () => {
                                     <div className="card-body02 bonus-card01 p-3">
                                         <div className="d-flex justify-content-between align-items-start mb-2">
                                             <div>
-                                                <p className=" mb-1">Payoutable</p>
+                                                <p className=" mb-1 text-dark fw-bold">Self Bot 3 Invest</p>
                                                 <h5 className="fw-bold mb-0 amount-report">
-                                                    ${userData?.WorkingWallet?.toLocaleString() || '0.00'}
+                                                    ${userData?.selfBot3Invest?.toLocaleString() || '0.00'}
                                                 </h5>
                                             </div>
                                             <div className="p-2 bg-warning-subtle rounded-2">
@@ -1948,9 +1948,9 @@ const Dashboard = () => {
                                             <div className="p-2 bg-primary-subtle rounded-2">
                                                 <i className="ti ti-user fs-5 text-primary"></i>
                                             </div>
-                                            <h6 className="mb-0 fw-semibold">Total Team</h6>
+                                            <h6 className="mb-0 fw-bold ">Total Team</h6>
                                         </div>
-                                        <h6 className="mb-0 fw-semibold">{userData?.TeamCount || '0'}</h6>
+                                        <h6 className="mb-0 fw-bold"  style={{color : "green"} }>{userData?.TeamCount || '0'}</h6>
                                     </div>
 
                                     <div className="d-flex align-items-center justify-content-between mb-2">
@@ -1958,9 +1958,9 @@ const Dashboard = () => {
                                             <div className="p-2" >
                                                 <i className="ti ti-chart-line fs-5" style={{ color: '#1976D2' }}></i>
                                             </div>
-                                            <h6 className="mb-0 fw-semibold">Active Team</h6>
+                                            <h6 className="mb-0 fw-bold">Active Team</h6>
                                         </div>
-                                        <h6 className="mb-0 fw-semibold">{userData?.ActiveTeam || '0'}</h6>
+                                        <h6 className="mb-0 fw-bold"  style={{color : "green"} }>{userData?.ActiveTeam || '0'}</h6>
                                     </div>
 
                                     <div className="d-flex align-items-center justify-content-between mb-2">
@@ -1968,9 +1968,9 @@ const Dashboard = () => {
                                             <div className="p-2">
                                                 <i className="ti ti-arrows-exchange fs-5" style={{ color: '#1976D2' }}></i>
                                             </div>
-                                            <h6 className="mb-0 fw-semibold">Inactive Team</h6>
+                                            <h6 className="mb-0 fw-bold">Inactive Team</h6>
                                         </div>
-                                        <h6 className="mb-0 fw-semibold">{userData?.InactiveTeam || '0'}</h6>
+                                        <h6 className="mb-0 fw-bold"  style={{color : "green"} }>{userData?.InactiveTeam || '0'}</h6>
                                     </div>
 
                                     <div className="d-flex align-items-center justify-content-between mb-2">
@@ -1978,9 +1978,9 @@ const Dashboard = () => {
                                             <div className="p-2" >
                                                 <i className="ti ti-repeat fs-5" style={{ color: '#1976D2' }}></i>
                                             </div>
-                                            <h6 className="mb-0 fw-semibold">Active Direct</h6>
+                                            <h6 className="mb-0 fw-bold">Active Direct</h6>
                                         </div>
-                                        <h6 className="mb-0 fw-semibold">{userData?.directId || '0'}</h6>
+                                        <h6 className="mb-0 fw-bold"  style={{color : "green"} }>{userData?.directId || '0'}</h6>
                                     </div>
 
                                     <div className="d-flex align-items-center justify-content-between mb-2">
@@ -1988,11 +1988,20 @@ const Dashboard = () => {
                                             <div className="p-2" >
                                                 <i className="ti ti-calendar-stats fs-5" style={{ color: '#1976D2' }}></i>
                                             </div>
-                                            <h6 className="mb-0 fw-semibold">Level Open</h6>
+                                            <h6 className="mb-0 fw-bold">Level Open</h6>
                                         </div>
-                                        <h6 className="mb-0 fw-semibold">{userData?.OpenLevel || '0'}</h6>
+                                        <h6 className="mb-0 fw-bold"  style={{color : "green"} }>{userData?.OpenLevel || '0'}</h6>
                                     </div>
 
+<div className="d-flex align-items-center justify-content-between mb-2">
+                                        <div className="d-flex align-items-center gap-2">
+                                            <div className="p-2" >
+                                                <i className="ti ti-calendar-stats fs-5" style={{ color: '#1976D2' }}></i>
+                                            </div>
+                                            <h6 className="mb-0 fw-bold">Team Bot 3 Invest</h6>
+                                        </div>
+                                        <h6 className="mb-0 fw-bold" style={{color : "green"} }>{userData?.teamBot3Invest || '0'}</h6>
+                                    </div>
                                 </div>
                             </div>
                         </div>

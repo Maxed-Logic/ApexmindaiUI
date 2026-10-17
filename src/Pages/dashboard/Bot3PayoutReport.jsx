@@ -37,13 +37,45 @@ const Bot3PayoutReport = () => {
     });
   };
 
-  // ✅ WALLET ADDRESS TRUNCATE FUNCTION
+  // WALLET ADDRESS TRUNCATE FUNCTION
   const truncateWallet = (wallet) => {
     if (!wallet || wallet === "0") return "-";
     if (wallet.length > 15) {
       return `${wallet.substring(0, 6)}...${wallet.substring(wallet.length - 4)}`;
     }
     return wallet;
+  };
+
+  // ✅ POORI ROW KA COLOR
+  const getRowColor = (status) => {
+    switch (status) {
+      case "Approved":
+        return "#e8f5e9"; // Halka Green
+      case "Pending":
+        return "#fff8e1"; // Halka Yellow
+      case "Process":
+        return "#f3e5f5"; // Halka Purple
+      case "Reject":
+        return "#ffebee"; // Halka Red
+      default:
+        return "transparent"; 
+    }
+  };
+
+  // ✅ BADGE KA COLOR
+  const getBadgeClass = (status) => {
+    switch (status) {
+      case "Approved":
+        return "bg-success";
+      case "Pending":
+        return "bg-warning text-dark";
+      case "Process":
+        return "bg-primary"; // ya custom CSS class
+      case "Reject":
+        return "bg-danger";
+      default:
+        return "bg-secondary";
+    }
   };
 
   // Fetch Capital Payout History
@@ -114,13 +146,14 @@ const Bot3PayoutReport = () => {
 
   const columns = [
     "S.No.",
+    "Status",
     "Date",
     "Amount",
     "Charges %",
     "Net Payable",
     "Wallet ID",
+    "Pay Hash",
     "Remark",
-    "Status",
   ];
 
   return (
@@ -162,64 +195,85 @@ const Bot3PayoutReport = () => {
       )}
 
       <div className="report-card">
-        {/* ✅ HORIZONTAL SCROLLING FIX */}
         <div style={{ overflowX: "auto", width: "100%" }}>
           <CustomTable columns={columns} loading={loading}>
             {currentRecords.length > 0 ? (
-              currentRecords.map((row, index) => (
-                <tr key={index} style={{ whiteSpace: "nowrap" }}> {/* ✅ Text upar chadhne se bacha */}
-                  <td className="text-center">
-                    <div className="sr-no-circle">{startIndex + index + 1}</div>
-                  </td>
-                  <td>{formatDate(row.TransDate)}</td>
-                  <td style={{ color: "green", fontWeight: "600" }}>
-                    {row.debit > 0 ? formatAmount(row.debit) : "0.00"}
-                  </td>
-                  <td style={{ color: "#ef4444", fontWeight: "600" }}>
-                    { row.othercharge}%
-                  </td>
-                  <td style={{ color: "green", fontWeight: "600" }}>
-                    {formatAmount(row.netPayable)}
-                  </td>
-                  
-                  {/* ✅ TRUNCATED WALLET ADDRESS */}
-                  <td
-                    style={{
-                      color: "green",
-                      fontSize: "13px",
-                    }}
-                    title={row.bankname || "-"} // Hover karne pe full address dikhega
-                  >
-                    {truncateWallet(row.bankname)}
-                  </td>
-                  
-                  <td
-                    style={{
-                      color: "#6b7280",
-                      fontSize: "13px",
-                      maxWidth: "250px", // ✅ Fix width for remark
-                      overflow: "hidden",
-                      textOverflow: "ellipsis", // ✅ Extra text ke liye "..." aayega
-                    }}
-                    title={row.Remark || "-"} // Hover karne pe full remark dikhega
-                  >
-                    {row.Remark || "-"}
-                  </td>
-                  <td>
-                    <span
-                      className={`badge ${
-                        row.Status === "Approved"
-                          ? "bg-success"
-                          : row.Status === "Pending"
-                          ? "bg-warning text-dark"
-                          : "bg-danger"
-                      }`}
+              currentRecords.map((row, index) => {
+                // Har row ke liye color nikalna
+                const currentRowColor = getRowColor(row.Status);
+
+                return (
+                  <tr key={index} style={{ whiteSpace: "nowrap" }}>
+                    {/* ✅ Har TD mein backgroundColor lagaya gaya hai taaki white background override ho jaye */}
+                    <td className="text-center" style={{ backgroundColor: currentRowColor }}>
+                      <div className="sr-no-circle">{startIndex + index + 1}</div>
+                    </td>
+                      <td style={{ backgroundColor: currentRowColor }}>
+                      <span className={`badge ${getBadgeClass(row.Status)}`}>
+                        {row.Status || "-"}
+                      </span>
+                    </td>
+                    <td style={{ backgroundColor: currentRowColor }}>
+                      {formatDate(row.TransDate)}
+                    </td>
+                    <td style={{ color: "green", fontWeight: "600", backgroundColor: currentRowColor }}>
+                      {row.debit > 0 ? formatAmount(row.debit) : "0.00"}
+                    </td>
+                    <td style={{ color: "#ef4444", fontWeight: "600", backgroundColor: currentRowColor }}>
+                      {row.othercharge}%
+                    </td>
+                    <td style={{ color: "green", fontWeight: "600", backgroundColor: currentRowColor }}>
+                      {formatAmount(row.netPayable)}
+                    </td>
+                    <td
+                      style={{
+                        color: "green",
+                        fontSize: "13px",
+                        backgroundColor: currentRowColor,
+                      }}
+                      title={row.bankname || "-"}
                     >
-                      {row.Status || "-"}
-                    </span>
-                  </td>
-                </tr>
-              ))
+                      {truncateWallet(row.bankname)}
+                    </td>
+                     <td
+  style={{
+    color: "green",
+    fontSize: "13px",
+    backgroundColor: currentRowColor,
+    cursor: row.trCode ? "pointer" : "default", // Agar hash hai toh pointer dikhega
+  }}
+  title={row.trCode || "-"}
+>
+  {row.trCode && row.trCode !== "0" ? (
+    <a
+      href={`https://bscscan.com/search?q=${row.trCode}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{ color: "green", textDecoration: "underline" }}
+    >
+      {truncateWallet(row.trCode)}
+    </a>
+  ) : (
+    "-"
+  )}
+</td>
+                    <td
+                      style={{
+                        color: "#6b7280",
+                        fontSize: "13px",
+                        maxWidth: "250px",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        backgroundColor: currentRowColor,
+                      }}
+                      title={row.Remark || "-"}
+                    >
+                      {row.Remark || "-"}
+                    </td>
+                  
+                  </tr>
+                );
+              })
             ) : (
               <tr>
                 <td colSpan={columns.length} className="text-center py-4">
@@ -230,7 +284,6 @@ const Bot3PayoutReport = () => {
           </CustomTable>
         </div>
 
-        {/* Pagination Component */}
         {totalPages > 1 && (
           <Pagination
             currentPage={pageIndex}

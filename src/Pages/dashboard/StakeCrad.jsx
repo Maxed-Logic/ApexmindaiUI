@@ -3,14 +3,15 @@ import apiClient from '../../api/apiClient';
 import { FaCalendarAlt, FaCoins, FaSyncAlt } from 'react-icons/fa';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
-import toast from 'react-hot-toast'; // ✅ Direct react-hot-toast import kiya
+import toast from 'react-hot-toast';
+import { useUser } from '../../context/UserContext';
+
+// ✅ Swiper Imports
 import { Swiper, SwiperSlide } from 'swiper/react';
+import { FreeMode, Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/free-mode';
 import 'swiper/css/navigation';
-import { Link } from 'react-router-dom';
-import { FreeMode, Navigation } from 'swiper/modules';
-import { useUser } from '../../context/UserContext';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -80,7 +81,7 @@ const Stakecard = () => {
         const data = res.data.response?.data?.[0];
 
         if (!data) {
-          toast.error('No payout data found for this stake.'); // ✅ TOAST SUCCESS/ERROR
+          toast.error('No payout data found for this stake.');
           return;
         }
 
@@ -119,14 +120,12 @@ const Stakecard = () => {
       console.log('Withdrawal Response:', res.data);
 
       if (res.data?.result === 'true') {
-        // ✅ Success Toast
         toast.success(
           res.data?.message || 'Withdrawal request submitted successfully'
         );
         setShowModal(false);
         setPayoutData(null);
       } else {
-        // ✅ Error Toast
         toast.error(res.data?.message || 'Withdrawal failed');
       }
     } catch (err) {
@@ -193,27 +192,27 @@ const Stakecard = () => {
 
   return (
     <>
-      <div className="stake-container mx-2">
+      <div className="stake-container mx-2 mt-3">
+        {/* ✅ Swiper Slider */}
         <Swiper
           slidesPerView={1}
-          spaceBetween={20}
-          loop={false}
+          spaceBetween={15}
           freeMode={true}
           navigation={{
             prevEl: '.stake-prev',
             nextEl: '.stake-next',
           }}
           breakpoints={{
-            0: { slidesPerView: 1, spaceBetween: 8 },
-            640: { slidesPerView: 2, spaceBetween: 8 },
-            1024: { slidesPerView: 3, spaceBetween: 8 },
+            0: { slidesPerView: 1, spaceBetween: 10 },
+            768: { slidesPerView: 2, spaceBetween: 15 },
+            1024: { slidesPerView: 2, spaceBetween: 20 },
           }}
           modules={[FreeMode, Navigation]}
-          className="mySwiper stake-swiper"
+          className="mySwiper stake-swiper pb-3"
         >
           {stakes.map((stake) => {
             const totalIncome = Number(stake.BinaryBuffer) || 0;
-            const paidAmount = Number(stake.Amtpaid) || 0;          
+            const paidAmount = Number(stake.perDay) || 0;
             const pendingAmount = totalIncome - paidAmount;
 
             const chartData = {
@@ -239,9 +238,10 @@ const Stakecard = () => {
             };
 
             return (
-              <SwiperSlide key={stake.Rid}>
-                <div className="stake-card card shadow-sm mt-3">
-                  <div className="stake-card-inner card-body d-flex align-items-center">
+              <SwiperSlide key={stake.Rid} className="h-auto">
+                <div className="stake-card card shadow-sm h-100">
+                  <div className="stake-card-inner card-body d-flex align-items-center position-relative">
+                    
                     {/* Donut Chart */}
                     <div className="stake-chart-wrap">
                       <div className="stake-chart-box">
@@ -254,30 +254,8 @@ const Stakecard = () => {
                     </div>
 
                     {/* Right Side Details */}
-                    <div className="stake-details">
-                      <Link to="/dashboard/Bot3PayoutReport">
-                        <button
-                          type="button"
-                          style={{
-                            width: "80px",
-                            padding: "6px 10px",
-                            background: "#0d6efd",
-                            color: "#fff",
-                            border: "none",
-                            borderRadius: "6px",
-                            marginTop: "-20px",
-                            position: "absolute",
-                            right: "15px",
-                            top: "25px",
-                            zIndex: 10,
-                            cursor: "pointer",
-                          }}
-                        >
-                          Report
-                        </button>
-                      </Link>
-                      
-                      <div className="d-flex gap-2 mt-4">
+                    <div className="stake-details w-100">
+                      <div className="d-flex gap-2 mt-3">
                         <div className="stake-row d-flex align-items-center">
                           <div className="stake-icon stake-icon-coins bg-primary-subtle rounded-circle">
                             <FaCoins />
@@ -301,7 +279,7 @@ const Stakecard = () => {
                         </div>
                       </div>
 
-                      <div className="d-flex gap-2">
+                      <div className="d-flex gap-2 mt-2">
                         <div className="stake-row d-flex align-items-center">
                           <div className="stake-icon stake-icon-date bg-info-subtle rounded-circle">
                             <FaCalendarAlt />
@@ -329,13 +307,14 @@ const Stakecard = () => {
 
                       <button
                         type="button"
-                        className="btn btn-primary"
+                        className="btn btn-primary w-100 mt-3"
                         onClick={() => handlePayout(stake.Rid)}
                         disabled={loadingRid === stake.Rid}
                       >
                         {loadingRid === stake.Rid ? 'Loading...' : 'Refund'}
                       </button>
                     </div>
+
                   </div>
                 </div>
               </SwiperSlide>
@@ -343,22 +322,24 @@ const Stakecard = () => {
           })}
         </Swiper>
 
-        {/* Previous / Next Buttons */}
-        <div className="stake-nav-wrap">
+        {/* ✅ Center Aligned Navigation Buttons with Proper Arrows */}
+        <div className="stake-nav-wrap d-flex justify-content-center align-items-center gap-3 mt-3 mb-2">
           <button
             type="button"
-            className="stake-nav-btn stake-prev"
+            className="stake-nav-btn stake-prev btn btn-light border shadow-sm d-flex align-items-center justify-content-center"
             aria-label="Previous stake"
+            style={{ width: '45px', height: '45px', borderRadius: '50%', fontSize: '18px', color: '#3f2ab3' }}
           >
-            <i className="ti ti-chevron-left"></i>
+            ◀
           </button>
 
           <button
             type="button"
-            className="stake-nav-btn stake-next"
+            className="stake-nav-btn stake-next btn btn-light border shadow-sm d-flex align-items-center justify-content-center"
             aria-label="Next stake"
+            style={{ width: '45px', height: '45px', borderRadius: '50%', fontSize: '18px', color: '#3f2ab3' }}
           >
-            <i className="ti ti-chevron-right"></i>
+            ▶
           </button>
         </div>
       </div>
